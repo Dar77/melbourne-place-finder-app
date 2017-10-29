@@ -1,0 +1,210 @@
+/* style.css - single-page-application-project */
+
+body {
+	font: 14px/1.5em "Oxygen", sans-serif;
+}
+
+h1,
+h2,
+h3 {
+	font-family: 'Jura', sans-serif;
+}
+
+h1 {
+	font: 2em/1.5em "Jura", sans-serif;
+	margin-top: 5%;
+}
+
+h2 {
+	font: 1.3em/1.5em "Jura", sans-serif;
+}
+
+h3 {
+	font: 0.875em/1.5em "Jura", sans-serif;
+}
+
+hr {
+	border: 1px dotted #3fedb1;
+}
+
+button {
+	cursor: pointer;
+}
+
+.title-text {
+	font: 0.5em/1.5em "Codystar", sans-serif;
+	color: #3fedb1;
+}
+
+#map {
+	bottom:0;
+	height: 100%;
+	left: 0;
+	position: absolute;
+	right: 0;
+}
+
+/* slide menu icon styles */
+.slide-menu-toggle {
+	position: fixed;
+	top: 2%;
+	right: 3%;
+	z-index: 3000;
+	width: 50px;
+	height: 50px;
+	border-radius: 25px;
+	background: rgba(0, 0, 0, 0.88);
+	cursor: pointer;
+}
+
+.slide-menu-toggle:hover {
+	background: white;
+    transition: background .3s ease;
+}
+
+.bar {
+    width: 25px;
+    padding-top: 6px;
+    margin: 0 auto;
+    border-bottom: 2px solid #3fedb1;
+    display: block;
+}
+
+.top-bar {
+	padding-top: 14px
+}
+/* end - slide menu icon styles */
+
+/* slide menu styles */
+.slide-menu {
+	width: 500px;
+	max-width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.88);
+	color: white;
+	text-align: center;
+	z-index: 1000;
+	border-right: 2px solid #3fedb1;
+	overflow: hidden;
+}
+
+.inner {
+	overflow: auto;
+	height: 99%;
+	-ms-overflow-style: none; /* hide scrollbars in IE 10+ */
+}
+
+::-webkit-scrollbar {
+	display: none; /* hide scrollbars in webkit-based browsers*/
+}
+
+.slide-in {
+	position: absolute;
+	top: 0;
+	left: 0;
+	transition: left .7s ease;
+}
+
+.slide-off-screen {
+	position: absolute;
+	top: 0;
+	left: -600px;
+}
+
+.place-list {
+	width: 80%;
+	margin: 0 auto;
+	list-style-type: none;
+	padding: 0;
+}
+
+.place-item {
+	background: #232222;
+	padding: 0.5em;
+	border-bottom: 1px solid #53536d;
+	cursor: pointer;
+	text-transform: uppercase;
+}
+
+.place-item:hover {
+	background: black;
+    transition: background .5s ease;
+	color: #3fedb1;
+	border-bottom: 1px solid #3fedb1;
+}
+/* end - slide menu styles */
+
+/* map info screen styles */
+.map-info {
+	padding: 2em 1em;
+	position: absolute;
+	z-index: 2000;
+	background: rgba(0, 0, 0, 0.88);
+	border-bottom: 1px solid #3fedb1;
+	color: white;
+	display: none;
+}
+/* end - map info screen styles */
+
+/* bootstrap styles */
+.input-group {
+    padding: 5% 10% 5%;
+}
+
+.btn-secondary {
+    background-color: #52cd52;
+}
+
+.btn-secondary:hover {
+    color: #3fedb1;
+	background: black;
+}
+
+/* Media queries ====================================================================================================================================================*/
+
+@media only screen and (min-width: 500px) {
+	/* styles applied above 500px */
+	.slide-menu-toggle {
+		top: 3%;
+		border: 1px solid #3fedb1;
+	}
+
+	.bar {
+	    border-bottom: 3px solid #3fedb1;
+	}
+
+	.top-bar {
+		padding-top: 12px
+	}
+
+	.slide-menu {
+		width: 350px;
+	}
+
+	.slide-off-screen {
+		left: -350px;
+	}
+}
+
+@media only screen and (min-width: 1000px) {
+	/* styles applied above 1000px */
+	.map-info {
+		padding: 2em;
+		bottom: 0px;
+		background: rgba(0, 0, 0, 0.88);
+		border-top: 1px solid #3fedb1;
+	}
+}
+
+@media only screen and (min-width: 1200px) {
+	/* styles applied above 1200px */
+	body {
+		font: 16px/1.5em "Oxygen", sans-serif;
+	}
+
+	h1 {
+		font: 2.5em/1.5em "Jura", sans-serif;
+	}
+}
+
+/* hiding scrollbar reference - https://blogs.msdn.microsoft.com/kurlak/2013/11/03/hiding-vertical-scrollbars-with-pure-css-in-chrome-ie-6-firefox-opera-and-safari */
