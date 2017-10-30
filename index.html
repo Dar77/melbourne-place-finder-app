@@ -22,11 +22,11 @@
     <body>
         <div class="container-fluid">
         	<!-- menu toggle -->
-			<div class="slide-menu-toggle" id="slide-menu-toggle">
+			<div class="slide-menu-toggle" data-bind= "click: toggleSlideMenu" id="slide-menu-toggle">
 				<span class="bar top-bar"></span><span class="bar"></span><span class="bar"></span>
 			</div>
 			<!-- slide menu -->
-			<div class="slide-menu slide-in" id="slide-menu">
+			<div class="slide-menu" id="slide-menu">
 				<div class="inner">
 					<h1>Melbourne <br><span class="title-text">place finder app</span></h1>
 					<hr>
@@ -66,17 +66,8 @@
 				    </select>
 					<hr>
 					<h2>Pick a location</h2>
-					<ul class="place-list" id="placeList">
-						<li class="place-item">place name</li>
-						<li class="place-item">place name</li>
-						<li class="place-item">place name</li>
-						<li class="place-item">place name</li>
-						<li class="place-item">place name</li>
-						<li class="place-item">place name</li>
-						<li class="place-item">place name</li>
-						<li class="place-item">place name</li>
-						<li class="place-item">place name</li>
-						<li class="place-item">place name</li>
+					<ul class="place-list" id="placeList" data-bind="foreach: placeList">
+						<li class="place-item" data-bind="text: placeName"></li>
 					</ul>
 					<hr>
 					<h2>Search Map</h2>
@@ -135,7 +126,6 @@
 	    <script defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDFWuEoaxjSgXjvmdpCQE6dWiBWp8OV0fU&libraries=places,drawing,geometry&v=3&callback=initMap" onerror="mapError()"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 		<script src="src/js/knockout.js"></script>
-		<script src="src/js/popper.min.js"></script>
 		<script src="src/js/app.js"></script>
     </body>
 </html>
