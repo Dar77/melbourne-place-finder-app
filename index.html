@@ -37,37 +37,12 @@
 						<button class="btn btn-secondary" type="button">Go!</button>
 						</span>
 					</div>
-				    <div class="input-group">
-						<input type="text" class="form-control" aria-label="Text input with dropdown button">
-						<div class="input-group-btn">
-							<button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-							Go!
-							</button>
-							<div class="dropdown-menu dropdown-menu-right">
-								<a class="dropdown-item" href="#">Action</a>
-								<a class="dropdown-item" href="#">Another action</a>
-								<a class="dropdown-item" href="#">Something else here</a>
-								<div role="separator" class="dropdown-divider"></div>
-								<a class="dropdown-item" href="#">Separated link</a>
-							</div>
-						</div>
-				    </div>
-				    <select name="dropdown-places" id="dropdown-places">
-				    	<option value="place1">place1</option>
-				    	<option value="place1">place1</option>
-				    	<option value="place1">place1</option>
-				    	<option value="place1">place1</option>
-				    	<option value="place1">place1</option>
-				    	<option value="place1">place1</option>
-				    	<option value="place1">place1</option>
-				    	<option value="place1">place1</option>
-				    	<option value="place1">place1</option>
-				    	<option value="place1">place1</option>
+				    <select  class="form-control" data-bind="options: filters, value: filter">
 				    </select>
 					<hr>
 					<h2>Pick a location</h2>
-					<ul class="place-list" id="placeList" data-bind="foreach: placeList">
-						<li class="place-item" data-bind="text: placeName"></li>
+					<ul class="place-list" id="placeList" data-bind="foreach: placesFilter">
+						<li  class="place-item" data-bind="text: placeName"></li>
 					</ul>
 					<hr>
 					<h2>Search Map</h2>

@@ -1,58 +1,84 @@
 // app.js single-page-application-project
 
 // Model =============================================================================================
-var places = [ // array of places
-	{
-		placeName: 'Fedaration Square',
-		location: {lat: -37.817997, lng: 144.968894},
-		placeImage: ''
-	},
-	{
-		placeName: 'Eureka Skydeck',
-		location: {lat: -37.821366, lng: 144.964696},
-		placeImage: ''
-	},
-	{
-		placeName: 'Hosier Lane',
-		location: {lat: -37.816645, lng: 144.969234},
-		placeImage: ''
-	},
-	{
-		placeName: 'Royal Botanic Gardens',
-		location: {lat: -37.82979, lng: 144.981594},
-		placeImage: ''
-	},
-	{
-		placeName: 'Melbourne Cricket Ground, MCG',
-		location: {lat: -37.81998, lng: 144.98345},
-		placeImage: ''
-	},
-	{
-		placeName: 'Block Arcade',
-		location: {lat: -37.815819, lng: 144.964689},
-		placeImage: ''
-	},
-	{
-		placeName: 'Queen Victoria Market',
-		location: {lat: -37.806637, lng: 144.959483},
-		placeImage: ''
-	},
-	{
-		placeName: 'Melbourne Museum',
-		location: {lat: -37.803596, lng: 144.971686},
-		placeImage: ''
-	},
-	{
-		placeName: 'Old Melbourne Gaol',
-		location: {lat: -37.807851, lng: 144.965147},
-		placeImage: ''
-	},
-	{
-		placeName: 'Albert Park Lake',
-		location: {lat: -37.846914, lng: 144.97137},
-		placeImage: ''
-	}
-];
+var modelData = {
+	places: [ // array of places
+		{
+			placeName: 'Fedaration Square',
+			location: {lat: -37.817997, lng: 144.968894},
+			placeImage: '',
+			type: 'Arts Complex'
+		},
+		{
+			placeName: 'Eureka Skydeck',
+			location: {lat: -37.821366, lng: 144.964696},
+			placeImage: '',
+			type: 'Obsevation Deck'
+		},
+		{
+			placeName: 'Hosier Lane',
+			location: {lat: -37.816645, lng: 144.969234},
+			placeImage: '',
+			type: 'Street Art Area'
+		},
+		{
+			placeName: 'Royal Botanic Gardens',
+			location: {lat: -37.82979, lng: 144.981594},
+			placeImage: '',
+			type: 'Gardens'
+		},
+		{
+			placeName: 'Melbourne Cricket Ground, MCG',
+			location: {lat: -37.81998, lng: 144.98345},
+			placeImage: '',
+			type: 'Sports Ground'
+		},
+		{
+			placeName: 'Block Arcade',
+			location: {lat: -37.815819, lng: 144.964689},
+			placeImage: '',
+			type: 'Historical'
+		},
+		{
+			placeName: 'Queen Victoria Market',
+			location: {lat: -37.806637, lng: 144.959483},
+			placeImage: '',
+			type: 'Market'
+		},
+		{
+			placeName: 'Melbourne Museum',
+			location: {lat: -37.803596, lng: 144.971686},
+			placeImage: '',
+			type: 'Museum'
+		},
+		{
+			placeName: 'Old Melbourne Gaol',
+			location: {lat: -37.807851, lng: 144.965147},
+			placeImage: '',
+			type: 'Historical'
+		},
+		{
+			placeName: 'Albert Park Lake',
+			location: {lat: -37.846914, lng: 144.97137},
+			placeImage: '',
+			type: 'Grand Prix Location'
+		}
+	],
+
+	filters: [
+		'Show All',
+		'Arts Complex',
+		'Obsevation Deck',
+		'Street Art Area',
+		'Gardens',
+		'Sports Ground',
+		'Historical',
+		'Market',
+		'Museum',
+		'Historical',
+		'Grand Prix Location'
+	]
+};
 
 // Initialize Google Map ========================================================================================
 var map;
@@ -265,7 +291,7 @@ function initMap() {
 	});
 
     var largeInfowindow = new google.maps.InfoWindow();
-    var bounds = new google.maps.LatLngBounds();
+    //var bounds = new google.maps.LatLngBounds();
 
     // default marker icon color
     var defaultIcon = createIcon('3fedb1');
@@ -274,37 +300,40 @@ function initMap() {
     var highlightedIcon = createIcon('be23e4');
 
     // The following group uses the location array to create an array of markers on initialize.
-    for (var i = 0; i < places.length; i++) {
+    for (var i = 0; i < modelData.places.length; i++) {
 		// Get the position from the location array.
-		var position = places[i].location;
-		var title = places[i].placeName;
+		var position = modelData.places[i].location;
+		var title = modelData.places[i].placeName;
 		// Create a marker per location, and put into markers array.
 		var marker = new google.maps.Marker({
-        map: map,
-        position: position,
-        title: title,
-        animation: google.maps.Animation.DROP,
-        icon: defaultIcon,
-        id: i
+	        //map: map,
+	        position: position,
+	        title: title,
+	        animation: google.maps.Animation.DROP,
+	        icon: defaultIcon,
+	        id: i
 		});
 		// Push the marker to our array of markers.
 		markers.push(marker);
+		console.log(marker, 'this is the marker created in maps function'); //REMOVE +++++++++++++++++++++++++++
 		// Create an onclick event to open an infowindow at each marker.
 		marker.addListener('click', function() {
-		populateInfoWindow(this, largeInfowindow);
+			populateInfoWindow(this, largeInfowindow);
 		});
 		// Two event listeners - one for mouseover, one for mouseout,
 		// to change the colors back and forth.
 		marker.addListener('mouseover', function() {
-		this.setIcon(highlightedIcon);
+			this.setIcon(highlightedIcon);
 		});
 		marker.addListener('mouseout', function() {
-		this.setIcon(defaultIcon);
+			this.setIcon(defaultIcon);
 		});
-		bounds.extend(markers[i].position);
+		//bounds.extend(markers[i].position);
     }
+    showListings();
+
     // Extend the boundaries of the map for each marker
-    map.fitBounds(bounds);
+    //map.fitBounds(bounds);
 } // end initMap()
 
 // This function populates the infowindow when the marker is clicked. We'll only allow
@@ -322,6 +351,18 @@ function populateInfoWindow(marker, infowindow) {
 		});
 	}
 }
+
+// This function will loop through the markers array and display them all.
+function showListings() {
+	var bounds = new google.maps.LatLngBounds();
+	// Extend the boundaries of the map for each marker and display the marker
+	for (var i = 0; i < markers.length; i++) {
+		markers[i].setMap(map);
+		bounds.extend(markers[i].position);
+	}
+	map.fitBounds(bounds);
+}
+
 // create the marker icons, size color etc.
 function createIcon(markerColor) {
 	var markerImage = new google.maps.MarkerImage(
@@ -339,34 +380,33 @@ function mapError(e) {
 	console.log(e);
 }
 
-var Location = function(data) {
-
-	this.placeName = ko.observable(data.placeName);
-	this.location = ko.observable(data.location);
-	this.placeImage = ko.observable(data.placeImage);
-}
-
-// View Model
+// View Model ==================================================================================================
 var ViewModel = function() {
 
-	var self = this; //self refers to the viewmodel
+    var self = this;
 
-	this.placeList = ko.observableArray([]);
+    self.placeList = ko.observableArray(modelData.places);
 
-	places.forEach(function(location) {  // load the places data
-		self.placeList.push(new Location(location));
+	self.filters = ko.observableArray(modelData.filters);
+
+    self.filter = ko.observable('');
+
+    self.placesFilter = ko.computed(function() {
+
+        var filter = self.filter();
+        if (!filter || filter == "Show All") {
+            return self.placeList();
+        } else {
+            return ko.utils.arrayFilter(self.placeList(), function(i) { // 1. see notes on arrayFilter
+                return i.type == filter;
+            });
+        }
 	});
 
-	this.toggleSlideMenu = function() {
-		$( '#slide-menu' ).toggleClass( 'slide-in');
-	};
 
-	this.createMapMarkers = function() {
-		//TODO send markers info to google map
-		//will be useful for when the number of places changes
-		 return showListings();
-	}
-}
+    self.toggleSlideMenu = function() {
+		$( '#slide-menu' ).toggleClass( 'slide-close');
+    };
+};
 
-// tell knockout to apply our bindings to this viewmodel
-ko.applyBindings(new ViewModel())
+ko.applyBindings(new ViewModel(modelData));

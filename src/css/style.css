@@ -79,7 +79,8 @@ button {
 .slide-menu {
 	position: absolute;
 	top: 0;
-	left: -600px;
+	left: 0;
+	transition: left 0.9s ease;
 	width: 500px;
 	max-width: 100%;
 	height: 100%;
@@ -102,10 +103,10 @@ button {
 	display: none; /* hide scrollbars in webkit-based browsers*/
 }
 
-.slide-in {
+.slide-close {
 	position: absolute;
 	top: 0;
-	left: 0;
+	left: -600px;
 	transition: left 0.9s ease;
 }
 
@@ -164,6 +165,12 @@ button {
 .btn-secondary:hover {
     color: #3fedb1;
 	background: black;
+}
+
+.form-control {
+	width: 80%;
+	margin: 0 auto;
+	border: 1px solid #3fedb1;
 }
 
 /* Media queries ====================================================================================================================================================*/
