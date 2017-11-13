@@ -36,6 +36,7 @@ button {
 	color: #3fedb1;
 }
 
+/* google map styles*/
 #map {
 	bottom:0;
 	height: 100%;
@@ -43,6 +44,44 @@ button {
 	position: absolute;
 	right: 0;
 }
+
+.map-info-box {
+	border: 2px dotted #3fedb1;
+    border-radius: 10px;
+    padding: 1em;
+    margin: 1em;
+    font-size: 18px;
+    color: black;
+}
+
+.info-box-button {
+	display: block;
+    margin: 20px auto;
+}
+
+.box-text {
+	font: 14px/1.5em "Oxygen", sans-serif;
+}
+
+.street-view {
+	width: 250px;
+	height: 250px;
+}
+
+#pano { /* street view container */
+	border: 1px solid white;
+}
+
+.map-error {
+	border: 2px dotted #3fedb1;
+    border-radius: 10px;
+    padding: 1em;
+    margin: 20% auto;
+    text-align: center;
+    max-width: 70%;
+}
+/* end - google map styles */
+
 
 /* slide menu icon styles */
 .slide-menu-toggle {
@@ -133,23 +172,16 @@ button {
 }
 /* end - slide menu styles */
 
-.map-info-box {
-	border: 2px dotted #3fedb1;
-	border-radius: 10px;
-	padding: 1em;
-	margin: 1em;
-	font-size: 18px;
-}
-
 /* map info screen styles */
-.map-info {
+.map-info { /* visible styles */
 	padding: 2em 1em;
 	position: absolute;
-	z-index: 2000;
 	background: rgba(0, 0, 0, 0.88);
 	border-bottom: 1px solid #3fedb1;
+	z-index: 2000;
 	color: white;
-	display: none;
+	opacity: 1;
+	transition: opacity 2s ease;
 }
 /* end - map info screen styles */
 
@@ -171,6 +203,13 @@ button {
 	width: 80%;
 	margin: 0 auto;
 	border: 1px solid #3fedb1;
+}
+
+.close {
+    font-size: 1.7rem;
+    color: #3fedb1;
+    opacity: 1;
+    outline: none;
 }
 
 /* Media queries ====================================================================================================================================================*/

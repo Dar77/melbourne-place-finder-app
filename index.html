@@ -31,18 +31,13 @@
 					<h1>Melbourne <br><span class="title-text">place finder app</span></h1>
 					<hr>
 					<h2>Places Filter</h2>
-					<div class="input-group">
-						<input type="text" class="form-control" placeholder="select a location" aria-label="select a location">
-						<span class="input-group-btn">
-						<button class="btn btn-secondary" type="button">Go!</button>
-						</span>
-					</div>
-				    <select  class="form-control" data-bind="options: filters, value: filter">
-				    </select>
+					<input type="text" class="form-control" placeholder="select a location" type="search" data-bind="value: selected, valueUpdate: 'keyup'" autocomplete="off" aria-label="select a location">
+				    <hr>
+					<h2>Found <span data-bind="text: selectedLocations().length"></span> Locations</h2>
 					<hr>
 					<h2>Pick a location</h2>
-					<ul class="place-list" id="placeList" data-bind="foreach: placesFilter">
-						<li  class="place-item" data-bind="text: placeName"></li>
+					<ul class="place-list" id="placeList" data-bind="foreach: selectedLocations">
+						<li  class="place-item" data-bind="text: title, click: $root.selectedListItem"></li>
 					</ul>
 					<hr>
 					<h2>Search Map</h2>
@@ -59,10 +54,18 @@
 		        <div class="col-xs-12" id="map">
 				</div>
 	    	</div>
-
-	    	<div class="row map-info" id="map-info">
+	    	<div class="row"> <!-- map error message div -->
+		        <div class="col-xs-12 map-error" id="map-error"></div>
+				</div>
+	    	</div>
+	    	<div class="row map-info" id="map-info" data-bind="visible: infoScreenVisible">
+	    		<div class="col-xs-12 col-sm-12 col-md-12 project">
+		        	<button type="button" class="close" data-bind="click: closeInfoScreen" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+	    		</div>
 		        <div  class="col-xs-12 col-sm-6 col-md-4 project">
-		        	<h2>Heading</h2>
+		        	<h2></h2>
 		        	<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quibusdam illum voluptates maiores recusandae minima nulla quaerat modi debitis, nisi perferendis, eum, laborum deleniti earum voluptatem accusamus architecto nostrum quam ut!</p>
 		        	<hr>
 		        	<p>Quae dolorem consectetur accusantium illo perspiciatis dolores obcaecati accusamus! Fugiat dolorem blanditiis aperiam ex iure, odio reiciendis laboriosam, veritatis consequuntur ipsum perspiciatis et accusamus laudantium non fugit, necessitatibus tempora ab.</p>
