@@ -59,32 +59,47 @@
 				</div>
 	    	</div>
 	    	<div class="row map-info" id="map-info" data-bind="visible: infoScreenVisible">
-	    		<div class="col-xs-12 col-sm-12 col-md-12 project">
+	    		<div class="col-xs-12 col-sm-12 col-md-12">
 		        	<button type="button" class="close" data-bind="click: closeInfoScreen" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
 	    		</div>
-		        <div  class="col-xs-12 col-sm-6 col-md-4 project">
-		        	<h2></h2>
-		        	<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quibusdam illum voluptates maiores recusandae minima nulla quaerat modi debitis, nisi perferendis, eum, laborum deleniti earum voluptatem accusamus architecto nostrum quam ut!</p>
+		        <div  class="col-xs-12 col-sm-6 col-md-4 col-lg-3" data-bind="foreach: wikiArray">
+		        	<h2>Related Wikipedia Links</h2>
 		        	<hr>
-		        	<p>Quae dolorem consectetur accusantium illo perspiciatis dolores obcaecati accusamus! Fugiat dolorem blanditiis aperiam ex iure, odio reiciendis laboriosam, veritatis consequuntur ipsum perspiciatis et accusamus laudantium non fugit, necessitatibus tempora ab.</p>
-		        	<p>Enim magnam quos eos nostrum sunt. Dignissimos, adipisci sint deserunt inventore sunt, iste ratione atque iusto magnam, cumque culpa nam accusamus iure, aliquam porro nesciunt incidunt. Hic nesciunt, nobis illo!</p>
-				</div>
-		        <div  class="col-xs-12 col-sm-6 col-md-4 project">
-		        	<h2>Heading</h2>
-		        	<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quibusdam illum voluptates maiores recusandae minima nulla quaerat modi debitis, nisi perferendis, eum, laborum deleniti earum voluptatem accusamus architecto nostrum quam ut!</p>
+		        	<h3 class="feature-text" data-bind="text: name"></h3>
+		        	<p data-bind="text: description"></p>
+		        	<ul id="wikipedia-links">
+		        		<li><a target="blank" data-bind="attr: {href: url}, text: name"></a></li>
+		        	</ul>
 		        	<hr>
-		        	<p>Quae dolorem consectetur accusantium illo perspiciatis dolores obcaecati accusamus! Fugiat dolorem blanditiis aperiam ex iure, odio reiciendis laboriosam, veritatis consequuntur ipsum perspiciatis et accusamus laudantium non fugit, necessitatibus tempora ab.</p>
-		        	<p>Enim magnam quos eos nostrum sunt. Dignissimos, adipisci sint deserunt inventore sunt, iste ratione atque iusto magnam, cumque culpa nam accusamus iure, aliquam porro nesciunt incidunt. Hic nesciunt, nobis illo!</p>
 				</div>
-		        <div  class="col-xs-12 col-sm-6 col-md-4 project">
-		        	<h2>Heading</h2>
-		        	<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quibusdam illum voluptates maiores recusandae minima nulla quaerat modi debitis, nisi perferendis, eum, laborum deleniti earum voluptatem accusamus architecto nostrum quam ut!</p>
+		        <div  class="col-xs-12 col-sm-6 col-md-4 col-lg-6">
+		        	<h2>Flickr Images</h2>
 		        	<hr>
-		        	<p>Quae dolorem consectetur accusantium illo perspiciatis dolores obcaecati accusamus! Fugiat dolorem blanditiis aperiam ex iure, odio reiciendis laboriosam, veritatis consequuntur ipsum perspiciatis et accusamus laudantium non fugit, necessitatibus tempora ab.</p>
-		        	<p>Enim magnam quos eos nostrum sunt. Dignissimos, adipisci sint deserunt inventore sunt, iste ratione atque iusto magnam, cumque culpa nam accusamus iure, aliquam porro nesciunt incidunt. Hic nesciunt, nobis illo!</p>
+		        	<div id="images"></div>
 				</div>
+		        <div  class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+		        	<h2>Four Square Info</h2>
+		        	<hr>
+		        	<h3 class="feature-text">Nearby Places:</h3>
+		        	<p data-bind="visible: fourSqError">Sorry! There was an error loading foursquare.</p>
+		        	<div class="four-square" data-bind="foreach: fourSqArray">
+			        	<h3 data-bind="text: name"></h3>
+			        	<p class="place-category" data-bind="text: category"></p>
+			        	<address>
+			        		<span data-bind="text: address"></span><br>
+			        		<span data-bind="text: city"></span><br>
+			        		<span data-bind="text: state"></span>
+			        	</address>
+			        	<hr>
+		        	</div>
+				</div>
+	    		<div class="col-xs-12 col-sm-12 col-md-12">
+		        	<button type="button" class="btn btn-success" data-bind="click: closeInfoScreen" aria-label="Close">
+						view map
+					</button>
+	    		</div>
 	    	</div>
 
 	    </div> <!-- end .container-fluid -->
