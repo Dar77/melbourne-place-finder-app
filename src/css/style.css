@@ -2,7 +2,7 @@
 
 body {
 	font: 14px/1.5em "Oxygen", sans-serif;
-	background: black;
+	background: #131312;
 }
 
 h1,
@@ -33,8 +33,8 @@ button {
 }
 
 img {
-	width: 250px;
-    max-width: 80%;
+	width: 200px;
+    max-width: 100%;
     margin: 10px;
 }
 
@@ -78,10 +78,6 @@ img {
 .street-view {
 	width: 250px;
 	height: 250px;
-}
-
-#pano { /* street view container */
-	border: 1px solid white;
 }
 
 .map-error {
@@ -133,7 +129,7 @@ img {
 	width: 500px;
 	max-width: 100%;
 	height: 100%;
-	background: rgba(0, 0, 0, 0.88);
+	background: #131312;
 	color: white;
 	text-align: center;
 	z-index: 1000;
@@ -152,7 +148,12 @@ img {
 	display: none; /* hide scrollbars in webkit-based browsers*/
 }
 
-.slide-close {
+.number-text {
+	font: 1.2em/1.5em "Codystar", sans-serif;
+    color: #e8ff00;
+}
+
+.closemenu {
 	position: absolute;
 	top: 0;
 	left: -600px;
@@ -180,16 +181,20 @@ img {
 	color: #3fedb1;
 	border-bottom: 1px solid #3fedb1;
 }
+
+.mobile-map-button {
+	margin-top: 1rem;
+}
 /* end - slide menu styles */
 
 /* map info screen styles */
 .map-info { /* visible styles */
 	padding: 2em 1em;
 	position: absolute;
-	top: 150px;
-	background: rgba(19, 19, 18, 0.96);
+	top: 0px;
+	background: #131312;
 	border-bottom: 1px solid #3fedb1;
-	z-index: 2000;
+	z-index: 4000;
 	color: white;
 	opacity: 1;
 	transition: opacity 2s ease;
@@ -197,14 +202,31 @@ img {
 	min-height: 100%;
 }
 
+.custom-button {
+	margin: 1em 0.5em 1em;
+}
+
 .place-category {
 	color: #af7575;
+}
+
+.wiki-link {
+	list-style-type: none;
+	font-size: 1.2em;
+}
+
+.wikipedia-links {
+	padding: 0;
 }
 /* end - map info screen styles */
 
 /* bootstrap styles */
 .input-group {
     padding: 5% 10% 5%;
+}
+
+.btn-success:focus {
+    box-shadow: none;
 }
 
 .btn-secondary {
@@ -248,10 +270,15 @@ img {
 
 	.slide-menu {
 		width: 350px;
+		background: rgba(0, 0, 0, 0.88);
 	}
 
 	.slide-off-screen {
 		left: -350px;
+	}
+
+	.mobile-map-button {
+		display: none;
 	}
 }
 
