@@ -22,27 +22,39 @@
     <body>
         <div class="container-fluid">
         	<!-- menu toggle -->
-			<div class="slide-menu-toggle" data-bind= "click: toggleSlideMenu" id="slide-menu-toggle">
+			<div class="slide-menu-toggle" data-bind= "click: $root.toggleSlideMenu">
 				<span class="bar top-bar"></span><span class="bar"></span><span class="bar"></span>
 			</div>
 			<!-- slide menu -->
-			<div class="slide-menu" id="slide-menu">
+			<div class="slide-menu" data-bind="css: {closemenu: menuClose}">
 				<div class="inner">
 					<h1>Melbourne <br><span class="title-text">place finder app</span></h1>
 					<hr>
 					<h2>Places Filter</h2>
-					<input type="text" class="form-control" placeholder="select a location" type="search" data-bind="value: selected, valueUpdate: 'keyup'" autocomplete="off" aria-label="select a location">
+					<input type="text" class="form-control" placeholder="search places" type="search" data-bind="value: selected, valueUpdate: 'keyup'" autocomplete="off" aria-label="select a location">
 				    <hr>
-					<h2>Found <span data-bind="text: selectedLocations().length"></span> Locations</h2>
+					<h2>Found <span class="number-text" data-bind="text: selectedLocations().length"></span> Locations</h2>
+					<div class="mobile-map-button">
+			        	<button type="button" class="btn btn-success" data-bind="click: closeSlideMenu" aria-label="close">
+							view map
+						</button>
+					</div>
 					<hr>
 					<h2>Pick a location</h2>
 					<ul class="place-list" id="placeList" data-bind="foreach: selectedLocations">
 						<li  class="place-item" data-bind="text: title, click: $root.selectedListItem"></li>
 					</ul>
 					<hr>
+		        	<button type="button" class="btn btn-success custom-button" data-bind="click: showAll" aria-label="show all">
+						show all
+					</button>
+		        	<button type="button" class="btn btn-success custom-button" data-bind="click: centerMarker" aria-label="center map on locations">
+						center map
+					</button>
+					<hr>
 					<h2>Search Map</h2>
 					<div class="input-group">
-						<input id="map-search" type="text" class="form-control" placeholder="general place search" aria-label="select a location">
+						<input id="map-search" type="text" class="form-control" placeholder="general map search" aria-label="select a location">
 						<span class="input-group-btn">
 						<button id="map-places" class="btn btn-secondary" type="button">Go!</button>
 						</span>
@@ -60,30 +72,49 @@
 	    	</div>
 	    	<div class="row map-info" id="map-info" data-bind="visible: infoScreenVisible">
 	    		<div class="col-xs-12 col-sm-12 col-md-12">
-		        	<button type="button" class="close" data-bind="click: closeInfoScreen" aria-label="Close">
+		        	<button type="button" class="close" data-bind="click: closeInfoScreen" aria-label="close">
 						<span aria-hidden="true">&times;</span>
 					</button>
 	    		</div>
-		        <div  class="col-xs-12 col-sm-6 col-md-4 col-lg-3" data-bind="foreach: wikiArray">
+				<!-- wikipedia api section -->
+		        <div  class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
 		        	<h2>Related Wikipedia Links</h2>
 		        	<hr>
-		        	<h3 class="feature-text" data-bind="text: name"></h3>
-		        	<p data-bind="text: description"></p>
-		        	<ul id="wikipedia-links">
-		        		<li><a target="blank" data-bind="attr: {href: url}, text: name"></a></li>
-		        	</ul>
-		        	<hr>
+		        	<p data-bind="visible: wikiError">Sorry! There was an error loading Wikipedia information, try closing tab and reopening.</p>
+		        	<div  data-bind="foreach: wikiArray">
+			        	<h3 class="feature-text" data-bind="text: name"></h3>
+			        	<p data-bind="text: description"></p>
+			        	<ul class="wikipedia-links">
+			        		<li class="wiki-link"><a target="blank" data-bind="attr: {href: url}, text: name"></a></li>
+			        	</ul>
+			        	<hr>
+		        	</div>
 				</div>
+				<!-- flikr api section -->
 		        <div  class="col-xs-12 col-sm-6 col-md-4 col-lg-6">
+		        	<h2>Controls</h2>
+		        	<hr>
+		        	<button type="button" class="btn btn-success custom-button" data-bind="click: closeInfoScreen" aria-label="close screen">
+						close screen
+					</button>
+		        	<button type="button" class="btn btn-success custom-button" data-bind="click: closeAll" aria-label="close">
+						view map
+					</button>
+		        	<button type="button" class="btn btn-success custom-button" data-bind="click: centerMarker" aria-label="center map on locations">
+						center map
+					</button>
 		        	<h2>Flickr Images</h2>
 		        	<hr>
+		        	<p data-bind="visible: flickrError">Sorry! There was an error loading Flickr images, try closing tab and reopening.</p>
 		        	<div id="images"></div>
+		        	<hr>
 				</div>
+				<!-- foursquare api section -->
 		        <div  class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
 		        	<h2>Four Square Info</h2>
 		        	<hr>
 		        	<h3 class="feature-text">Nearby Places:</h3>
-		        	<p data-bind="visible: fourSqError">Sorry! There was an error loading foursquare.</p>
+		        	<p data-bind="visible: fourSqError">Sorry! There was an error loading Four-Square information, try closing tab and reopening.</p>
 		        	<div class="four-square" data-bind="foreach: fourSqArray">
 			        	<h3 data-bind="text: name"></h3>
 			        	<p class="place-category" data-bind="text: category"></p>
@@ -96,8 +127,8 @@
 		        	</div>
 				</div>
 	    		<div class="col-xs-12 col-sm-12 col-md-12">
-		        	<button type="button" class="btn btn-success" data-bind="click: closeInfoScreen" aria-label="Close">
-						view map
+		        	<button type="button" class="close" data-bind="click: closeInfoScreen" aria-label="close">
+						<span aria-hidden="true">&times;</span>
 					</button>
 	    		</div>
 	    	</div>

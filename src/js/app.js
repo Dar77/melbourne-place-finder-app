@@ -23,7 +23,7 @@ var modelData = {
 		},
 		{
 			placeName: 'Royal Botanic Gardens Victoria',
-			location: {lat: -37.82979, lng: 144.981594},
+			location: {lat: -37.829751, lng: 144.98138},
 			placeImage: '',
 			type: 'Gardens'
 		},
@@ -41,7 +41,7 @@ var modelData = {
 		},
 		{
 			placeName: 'Queen Victoria Market',
-			location: {lat: -37.806637, lng: 144.959483},
+			location: {lat: -37.806427, lng: 144.959342},
 			placeImage: '',
 			type: 'Market'
 		},
@@ -52,95 +52,43 @@ var modelData = {
 			type: 'Museum'
 		},
 		{
+			placeName: 'Melbourne Star Observation Wheel',
+			location: {lat: -37.811882, lng: 144.937461},
+			placeImage: '',
+			type: 'Observation Wheel'
+		},
+		{
+			placeName: 'Centre Place, Melbourne',
+			location: {lat: -37.8164, lng: 144.965438},
+			placeImage: '',
+			type: 'Laneway'
+		},
+		{
+			placeName: 'Royal Arcade, Melbourne',
+			location: {lat: -37.814624, lng: 144.963843},
+			placeImage: '',
+			type: 'Historical'
+		},
+		{
+			placeName: 'Melbourne Aquarium',
+			location: {lat: -37.82102, lng: 144.958414},
+			placeImage: '',
+			type: 'Aquarium'
+		},
+		{
+			placeName: 'Old Melbourne Gaol',
+			location: {lat: -37.807966, lng: 144.965308},
+			placeImage: '',
+			type: 'Historical'
+		},
+		{
 			placeName: 'Albert Park Lake',
 			location: {lat: -37.846914, lng: 144.97137},
 			placeImage: '',
 			type: 'Grand Prix Location'
 		}
 	],
-
-	filters: [ // select categories
-		'Show All',
-		'Arts Complex',
-		'Observation Deck',
-		'Street Art Area',
-		'Gardens',
-		'Sports Ground',
-		'Historical',
-		'Market',
-		'Museum',
-		'Historical',
-		'Grand Prix Location'
-	]
-};
-
-// AJAX - four square request
-modelData.fourSquareData =  function(lat, lng) {
-	var clientId = 'LT32IBE4RVQNKHSRD1MQ3FP2QOQ4D5ZZEBOKRB5LSKAK1QWH';
-	var code = 'VEO2CSXAPNACQNG0JSY30CZO1BF2RFDMOTCAX3EMRG0GTIYA';
-	var version = '20170801';
-	var url = 'https://api.foursquare.com/v2/venues/search';
-	$.ajax({
-		type: 'GET',
-		url: url,
-		dataType: 'json',
-		data: 'limit=1' +
-			'&ll=' + lat + ',' + lng  +
-			'&client_id='+ clientId +
-			'&client_secret='+ code +
-			'&v=' + version +
-			'&m=foursquare',
-		timeout: 1000,
-		beforeSend: function() {
-			console.log('loading');
-		},
-		complete: function() {
-			console.log('finished loading');
-		},
-		success: function(response) {
-			console.log('loaded');
-			// load foursquare data
-			console.log(response);
-		},
-		error: function(response) {
-			console.log('foursquare api request error');
-			window.alert('foursquare api request error');
-		}
-	});
-};
-
-/* AJAX - wikipedia request
-modelData.wikiData =  function(request) {
-	var url = 'https://en.wikipedia.org/w/api.php?action=opensearch&search=' + request.title + '&format=json&callback=wikiCallback';
-	$.ajax({
-		url: url,
-		dataType: 'jsonp',
-		jsonp: 'callback',
-		timeout: 1000,
-		success: function(response) {
-			// load wikipedia data
-            var placeLink = response[1];
-            var p = placeLink.length;
-            var placeLink = response[1];
-            var p = placeLink.length;
-            var $wikiElem = $('#wikipedia-links');
-           	if ($wikiElem.innerHTML !== '') { // check whether the list already has a link
-           		$($wikiElem).empty(); // clear content
-           	}
-
-            for (var i = 0; i < p; i++) { // construct the links
-                var linkStr = placeLink[i];
-                var linkUrl = 'http://en.wikipedia.org/wiki/' + linkStr;
-                $wikiElem.append('<li><a target="blank" href="' + linkUrl +'">' + linkStr + '</a></li>');
-                console.log(response);
-            }
-		},
-		error: function(response) {
-			console.log('wikipedia api request error');
-			window.alert('wikipedia api request error');
-		}
-	});
-};*/
+}; // end model data
 
 // Initialize Google Map ========================================================================================
 var map;
@@ -349,7 +297,8 @@ function initMap() {
 		center: {lat:  -37.813611, lng: 144.963056},
 		zoom: 14,
 		styles: styles, // add the custom map styles
-		mapTypeControl: false
+		mapTypeControl: false,
+		fullscreenControl: false
 	});
 
     var largeInfowindow = new google.maps.InfoWindow();
@@ -371,7 +320,7 @@ function initMap() {
 	        //map: map,
 	        position: position,
 	        title: title,
-	        animation: google.maps.Animation.DROP,
+	        animation: false,
 	        icon: defaultIcon,
 	        id: i
 		});
@@ -383,6 +332,7 @@ function initMap() {
 		// Create an onclick event to open an infowindow at each marker.
 		marker.addListener('click', function() {
 			populateInfoWindow(this, largeInfowindow);
+			animateMarker(this, defaultIcon, highlightedIcon);
 		});
 		// Two event listeners - one for mouseover, one for mouseout,
 		// to change the colors back and forth.
@@ -392,12 +342,31 @@ function initMap() {
 		marker.addListener('mouseout', function() {
 			this.setIcon(defaultIcon);
 		});
+
     }
+	//Get current center
+	var mapCenter = map.getCenter();
+
+	// event listener for resize on window
+	google.maps.event.addDomListener(window, 'resize', function() {
+	   map.setCenter(mapCenter); // set map to center if window is resized
+	}); // ref - https://stackoverflow.com/questions/8558226/recenter-a-google-map-after-container-changed-width
+
 	ko.applyBindings(new viewModel(modelData));
 
     showListings();
 
 } // end initMap()
+
+// google map functions =============================================================================================
+function animateMarker(marker, defaultIcon, highlightedIcon) {
+	for (var i = 0; i < markers.length; i++) {
+		markers[i].setAnimation(null); // switch off animation for all markers
+		markers[i].setIcon(defaultIcon);
+	}
+	marker.animation = google.maps.Animation.BOUNCE; // animate selected marker
+	marker.setIcon(highlightedIcon);
+}
 
 // This function populates the infowindow when the marker is clicked. We'll only allow
 // one infowindow which will open at the marker that is clicked, and populate based
@@ -433,7 +402,7 @@ function populateInfoWindow(marker, infowindow) {
 				var panorama = new google.maps.StreetViewPanorama(
 				document.getElementById('street-view'), panoramaOptions);
 			} else {
-				infowindow.setContent('<div class="map-info-box"><h3>' + marker.title + '</h3><p class="box-text">No Street View Found</p></div>');
+				infowindow.setContent('<div class="map-info-box"><h3>' + marker.title + '</h3><p class="box-text">Sorry! No Street View Found</p></div>');
 			}
 		}
 		// Use streetview service to get the closest streetview image within
@@ -441,10 +410,8 @@ function populateInfoWindow(marker, infowindow) {
 		streetViewService.getPanoramaByLocation(marker.position, radius, getStreetView);
 		// Open the infowindow on the correct marker.
 		infowindow.open(map, marker);
-
 	}
 }
-
 
 // This function will loop through the markers array and display them all.
 function showListings() {
@@ -459,13 +426,14 @@ function showListings() {
 
 // create the marker icons, size color etc.
 function createIcon(markerColor) {
+
 	var markerImage = new google.maps.MarkerImage(
 	'http://chart.googleapis.com/chart?chst=d_map_spin&chld=1.15|0|'+ markerColor +
 	'|40|_|%E2%80%A2',
-	new google.maps.Size(23, 34),
+	new google.maps.Size(24, 34),
 	new google.maps.Point(0, 0),
 	new google.maps.Point(10, 34),
-	new google.maps.Size(23,34));
+	new google.maps.Size(24, 34));
 	return markerImage;
 }
 // Google map error handling
@@ -473,7 +441,6 @@ function mapError() {
 	var mapError = document.getElementById('map-error');
 	mapError.innerHTML = '<h2>Sorry! Map Error</h2><p>There seems to be a problem loading the map, please try reloading the page</p>';
 }
-
 
 // View Model ==================================================================================================
 var viewModel = function(data) {
@@ -512,38 +479,24 @@ var viewModel = function(data) {
 
 	// show the search result markers
 	function showSelectedMarkers() {
-		//var bounds = new google.maps.LatLngBounds();
-		// Extend the boundaries of the map for each marker and display the marker
-		/*
-		for (var i = 0; i < markers.length; i++) {
-			markers[i].setVisible(false); // hide all the markers
-		}
-		*/
 		var s = self.selectedLocations().length
 		for (var i = 0; i < s; i++) {
 			self.selectedLocations()[i].setVisible(true); // show the selected markers
 			self.selectedLocations()[i].setMap(map);
-			//bounds.extend(self.selectedLocations()[i].position);
 		}
-		//map.fitBounds(bounds);
 	};
 
-	// map info screen state
-	self.infoScreenVisible = ko.observable(false); // initial value
-
-	self.openInfoScreen = function() { // open map info screen
-		return self.infoScreenVisible(true);
+	// center map on the markers
+	self.centerMarker = function() {
+		var bounds = new google.maps.LatLngBounds(); // define the boundary of the markers
+		var s = self.selectedLocations().length
+		for (var i = 0; i < s; i++) {
+			self.selectedLocations()[i].setVisible(true); // show the selected markers
+			self.selectedLocations()[i].setMap(map);
+			bounds.extend(self.selectedLocations()[i].position);
+		}
+		map.fitBounds(bounds); // fit map to the defined bounds
 	};
-
-	self.closeInfoScreen = function() { // close map info screen
-		return self.infoScreenVisible(false);
-	};
-
-	/* toggle for css - didn't use
-	self.transition = ko.pureComputed(function() { // map info screen transition
-        return self.infoScreenVisible() === true ? "mapinfo" : "hideinfo";
-    });
-	*/
 
 	// icon generator
 	self.currentIcon = function(color) {
@@ -555,6 +508,40 @@ var viewModel = function(data) {
 			new google.maps.Size(23,34));
 		return iconType;
 	};
+
+	// toggle slide menu
+	self.menuClose = ko.observable(false); // starting menu state (open)
+
+    self.toggleSlideMenu = function() {
+		self.menuClose(!self.menuClose());
+    }; //ref - https://stackoverflow.com/questions/39799600/how-to-use-knockoutjs-click-binding-to-create-a-hamburger-menu
+
+    // close slide menu
+    self.closeSlideMenu = function() {
+		self.menuClose(!self.menuClose());
+    }
+
+    // show all button - slide menu show all places
+    self.showAll = function() {
+    	self.selected(''); // removes any current search term from input
+    };
+
+	// map info screen state
+	self.infoScreenVisible = ko.observable(false); // initial value
+	// open map info screen
+	self.openInfoScreen = function() {
+		return self.infoScreenVisible(true);
+	};
+	// close map info screen
+	self.closeInfoScreen = function() {
+		return self.infoScreenVisible(false);
+	};
+
+    // close map info screen and slide menu
+    self.closeAll = function() {
+    	self.closeInfoScreen();
+    	self.closeSlideMenu();
+    }
 
 	self.currentPlace = ko.observable()
 	// selected list item - onclick function
@@ -578,8 +565,7 @@ var viewModel = function(data) {
 		self.wikiData(self.currentPlace());
 
 		// request the flickr data
-		//flickrData(self.currentPlace().title.toLowerCase());
-		runImages(self.currentPlace().title.toLowerCase());
+		self.flickrData(self.currentPlace().title.toLowerCase());
 
 		var lat = self.currentPlace().position.lat();
 		var lng = self.currentPlace().position.lng();
@@ -589,6 +575,7 @@ var viewModel = function(data) {
 
 	// wikipedia request observables
 	self.wikiArray = ko.observableArray(); // array to store wikipedia results
+	self.wikiError = ko.observable(false); // wikipedia user error message
 
 	// wikipedia AJAX request
 	self.wikiData =  function(request) {
@@ -597,17 +584,19 @@ var viewModel = function(data) {
 			url: url,
 			dataType: 'jsonp',
 			jsonp: 'callback',
-			timeout: 1000,
+			timeout: 2000,
 			success: function(response) {
-				// load wikipedia data
 				self.wikiArray.removeAll(); // clear the array
+				self.wikiError(false); // remove any error message
+
+				// load wikipedia data
 	            var wikiName = response[1];
 	            var wikiDescription = response[2];
 	            var wikiUrl = response[3];
 	            var p = wikiName.length;
-
 	            // run a loop to populate an array with objects containing a name, description and url
 	            for (var i = 0; i < p; i++) {
+
 	                if (wikiDescription !== '') {
 	                	var descriptionStr =  wikiDescription[i];
 	                }
@@ -616,63 +605,36 @@ var viewModel = function(data) {
 			},
 			error: function(response) {
 				console.log('wikipedia api request error');
-				window.alert('wikipedia api request error');
+				self.wikiError(true); // display error message to user
 			}
 		});
 	};
 
-	/* flickr
+	// flickr request observables
+	self.flickrError = ko.observable(false); // flickr user error message
 
+	// AJAX - flickr request TODO - try the api key version
 	self.flickrData = function(request) {
-		var jsonFlickrFeed;
-		function jsonFlickrFeed(json) {
-		  $.each(json.items, function(i, item) {
-		    $("<img />").attr("src", item.media.m).appendTo("#images");
-		  });
-		};
 
 		$.ajax({
-			url: 'https://api.flickr.com/services/feeds/photos_public.gne',
-			//url: 'https://api.flickr.com/services/feeds/photos_public.gne?callback=jQuery11130192835240369585_1510825513003&tags=block+arcade&format=json&_=1510825513004',
-			dataType: 'jsonp'
-			data: { "tags": request, "format": "json" },
-			/*
-			success: function jsonFlickrFeed(json) {
-				$.each(json.items, function(i, item) {
-					console.log(item);
-				});
-				console.log(response);
+		    url: 'https://api.flickr.com/services/feeds/photos_public.gne',
+		    dataType: 'jsonp',
+		    data: { 'tags': request, 'format': 'json', 'safe_search': 1, 'content_type': 1, 'per_page': 5},
+			success: function(json) {
+
+				self.flickrError(false);
+	  			jsonFlickrFeed(json);
 			},
-			error: function(response) {
-				console.log('flickr api request error');
-				window.alert('flickr api request error');
+			error: function(e) {
+		      	var error = e.error;
+		        if (error) {
+			        console.log(error, 'Sorry! There was an error loading Flickr images, try closing tab and reopening.');
+			        self.flickrError(true);
+		        }
 			}
-
-		});
-	};*/
-/*
-	function jsonFlickrFeed(json) {
-		console.log(json, 'flikr feed');
-
-		$.each(json.items, function(i, item) {
-		$("<img />").attr("src", item.media.m).appendTo("#images");
-		});
+	  	});
 	};
 
-	// AJAX flickr request
-	function flickrData(request) {
-		$.ajax({
-			url: 'https://api.flickr.com/services/feeds/photos_public.gne',
-			dataType: 'jsonp',
-			data: { "tags": request, "format": "json" },
-			error: function(response) {
-				console.log('flickr api request error');
-				window.alert('flickr api request error');
-			}
-		});
-	};
-	flickrData('melbourne museum');
-*/
 	// foursquare request observables
 	self.fourSqArray = ko.observableArray(); // array to store foursquare results
 	self.fourSqError = ko.observable(false); // foursquare user error message
@@ -692,15 +654,15 @@ var viewModel = function(data) {
 				'&client_secret='+ code +
 				'&v=' + version +
 				'&m=foursquare',
-			timeout: 1000,
+			timeout: 2000,
 			success: function(data) {
 				self.fourSqArray.removeAll(); // clear the array
-				self.fourSqError(false);
+				self.fourSqError(false); // remove any error message
 
 				//load foursquare data
 				var fourSqData = data.response.venues;
 				var v = fourSqData.length;
-	            for (var i = 0; i < v; i++) {
+	            for (var i = 0; i < v; i++) { // fill the foursquare array with data from the response
 
 					var fourSqName = fourSqData[i].name;
 					var fourSqAddress = fourSqData[i].location.address;
@@ -722,16 +684,19 @@ var viewModel = function(data) {
 			},
 			error: function(response) {
 				console.log('foursquare api request error');
-				self.fourSqError(true);
+				self.fourSqError(true); // display error message to user
 			}
 		});
 	};
+};
 
-	//https://api.foursquare.com/v2/venues/explore/?near=melbourne&venuePhotos=1&client_id=LT32IBE4RVQNKHSRD1MQ3FP2QOQ4D5ZZEBOKRB5LSKAK1QWH&client_secret=VEO2CSXAPNACQNG0JSY30CZO1BF2RFDMOTCAX3EMRG0GTIYA&v=20131124
-	// toggle slide menu
-    self.toggleSlideMenu = function() {
-		$( '#slide-menu' ).toggleClass( 'slide-close');
-    };
+// process flickr api response - couldn't get this to work inside viewModel?
+function jsonFlickrFeed(json) {
+	console.log(json, 'jsonFlickrFeed');
+	$('#images').empty(); // empty previously loaded images
+	$.each(json.items, function(i, item) {
+		$('<img />').attr('src', item.media.m).appendTo('#images');
+	});
 };
 
 //ko.applyBindings(new ViewModel(modelData));
@@ -781,30 +746,26 @@ ref - https://stackoverflow.com/questions/18990244/whats-the-applybindings-secon
         }
 	});
 	*/
+//==================================================================================================================
 
-function jsonFlickrFeed(json) {
-	console.log(json, 'jsonFlickrFeed');
-	$('#images').empty();
-	$.each(json.items, function(i, item) {
-		$('<img />').attr('src', item.media.m).appendTo('#images');
-	});
-};
-
-function runImages(request) {
-
+/* alternate AJAX request code syntax
 	$.ajax({
 	    url: 'https://api.flickr.com/services/feeds/photos_public.gne',
 	    dataType: 'jsonp',
 	    data: { 'tags': request, 'format': 'json', 'safe_search': 1, 'content_type': 1, 'per_page': 5},
-		timeout: 3000,
-		success: function(response) {
-			console.log(response);
-		},
-		error: function() {
-			console.log('flickr api request error');
-			//window.alert('flickr api request error');
-		}
-  	});
-};
+  	}).done(function(json) {
+  		console.log('loaded');
+  		jsonFlickrFeed(json);
+    }).fail(function(response) { // error handling
 
+        var error = response.error;
+        if (error) {
+        console.log(error, 'Sorry! There was an error loading Flickr images, try closing tab and reopening.');
+        }
+
+    })
+
+    return false;
+};
+*/
 
