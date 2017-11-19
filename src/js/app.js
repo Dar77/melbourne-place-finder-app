@@ -5,94 +5,67 @@ var modelData = {
 	places: [ // array of places
 		{
 			placeName: 'Federation Square',
-			location: {lat: -37.817997, lng: 144.968894},
-			placeImage: '',
-			type: 'Arts Complex'
+			location: {lat: -37.817997, lng: 144.968894}
 		},
 		{
 			placeName: 'Eureka Skydeck',
-			location: {lat: -37.821366, lng: 144.964696},
-			placeImage: '',
-			type: 'Observation Deck'
+			location: {lat: -37.821366, lng: 144.964696}
 		},
 		{
 			placeName: 'Hosier Lane',
-			location: {lat: -37.816645, lng: 144.969234},
-			placeImage: '',
-			type: 'Street Art Area'
+			location: {lat: -37.816645, lng: 144.969234}
 		},
 		{
 			placeName: 'Royal Botanic Gardens Victoria',
-			location: {lat: -37.829751, lng: 144.98138},
-			placeImage: '',
-			type: 'Gardens'
+			location: {lat: -37.829751, lng: 144.98138}
 		},
 		{
 			placeName: 'Melbourne Cricket Ground, MCG',
-			location: {lat: -37.81998, lng: 144.98345},
-			placeImage: '',
-			type: 'Sports Ground'
+			location: {lat: -37.81998, lng: 144.98345}
 		},
 		{
 			placeName: 'Block Arcade',
-			location: {lat: -37.815819, lng: 144.964689},
-			placeImage: '',
-			type: 'Historical'
+			location: {lat: -37.815819, lng: 144.964689}
 		},
 		{
 			placeName: 'Queen Victoria Market',
-			location: {lat: -37.806427, lng: 144.959342},
-			placeImage: '',
-			type: 'Market'
+			location: {lat: -37.806427, lng: 144.959342}
 		},
 		{
 			placeName: 'Melbourne Museum',
-			location: {lat: -37.803596, lng: 144.971686},
-			placeImage: '',
-			type: 'Museum'
+			location: {lat: -37.803596, lng: 144.971686}
 		},
 		{
 			placeName: 'Melbourne Star Observation Wheel',
-			location: {lat: -37.811882, lng: 144.937461},
-			placeImage: '',
-			type: 'Observation Wheel'
+			location: {lat: -37.811882, lng: 144.937461}
 		},
 		{
 			placeName: 'Centre Place, Melbourne',
-			location: {lat: -37.8164, lng: 144.965438},
-			placeImage: '',
-			type: 'Laneway'
+			location: {lat: -37.8164, lng: 144.965438}
 		},
 		{
 			placeName: 'Royal Arcade, Melbourne',
-			location: {lat: -37.814624, lng: 144.963843},
-			placeImage: '',
-			type: 'Historical'
+			location: {lat: -37.814624, lng: 144.963843}
 		},
 		{
 			placeName: 'Melbourne Aquarium',
-			location: {lat: -37.82102, lng: 144.958414},
-			placeImage: '',
-			type: 'Aquarium'
+			location: {lat: -37.82102, lng: 144.958414}
 		},
 		{
 			placeName: 'Old Melbourne Gaol',
-			location: {lat: -37.807966, lng: 144.965308},
-			placeImage: '',
-			type: 'Historical'
+			location: {lat: -37.807966, lng: 144.965308}
 		},
 		{
 			placeName: 'Albert Park Lake',
-			location: {lat: -37.846914, lng: 144.97137},
-			placeImage: '',
-			type: 'Grand Prix Location'
+			location: {lat: -37.846914, lng: 144.97137}
 		}
 	],
 }; // end model data
 
 // Initialize Google Map ========================================================================================
 var map;
-var markers = [];
+var markers = []; // array for map markers
+var placeMarkers = []; // array for google places markers
 
 function initMap() {
 
@@ -309,10 +282,13 @@ function initMap() {
     // "highlighted location" marker icon color
     var highlightedIcon = createIcon('be23e4');
 
+    var searchBox = new google.maps.places.SearchBox(
+    document.getElementById('places-search'));
+    searchBox.bindTo('bounds', map); // bias results to the bounds of the map
 
     // The following group uses the location array to create an array of markers on initialize.
     for (var i = 0; i < modelData.places.length; i++) {
-		// Get the position from the location array.
+		// Get the position from the model data.
 		var position = modelData.places[i].location;
 		var title = modelData.places[i].placeName;
 		// Create a marker per location, and put into markers array.
@@ -326,8 +302,6 @@ function initMap() {
 		});
 		// Push the marker to our array of markers.
 		markers.push(marker);
-
-		console.log(marker, 'this is the marker created in maps function'); //REMOVE +++++++++++++++++++++++++++
 
 		// Create an onclick event to open an infowindow at each marker.
 		marker.addListener('click', function() {
@@ -344,6 +318,17 @@ function initMap() {
 		});
 
     }
+
+    ko.applyBindings(new viewModel(modelData)); // apply knockout js bindings
+
+	// Listen for the event fired when the user selects a prediction from the picklist
+	searchBox.addListener('places_changed', function() {
+	searchBoxPlaces(this);
+	});
+
+	// Listen for the event fired when the user selects a prediction and clicks the "go" button
+	document.getElementById('go-places').addEventListener('click', textSearchPlaces);
+
 	//Get current center
 	var mapCenter = map.getCenter();
 
@@ -352,14 +337,14 @@ function initMap() {
 	   map.setCenter(mapCenter); // set map to center if window is resized
 	}); // ref - https://stackoverflow.com/questions/8558226/recenter-a-google-map-after-container-changed-width
 
-	ko.applyBindings(new viewModel(modelData));
-
-    showListings();
+    showListings(); // Initial layout for map and markers
 
 } // end initMap()
 
 // google map functions =============================================================================================
+// animate the selected marker
 function animateMarker(marker, defaultIcon, highlightedIcon) {
+
 	for (var i = 0; i < markers.length; i++) {
 		markers[i].setAnimation(null); // switch off animation for all markers
 		markers[i].setIcon(defaultIcon);
@@ -368,10 +353,9 @@ function animateMarker(marker, defaultIcon, highlightedIcon) {
 	marker.setIcon(highlightedIcon);
 }
 
-// This function populates the infowindow when the marker is clicked. We'll only allow
-// one infowindow which will open at the marker that is clicked, and populate based
-// on that markers position.
+// populate the infowindow when the marker is clicked
 function populateInfoWindow(marker, infowindow) {
+
 	// Check to make sure the infowindow is not already opened on this marker.
 	if (infowindow.marker != marker) {
 		infowindow.marker = marker;
@@ -387,6 +371,7 @@ function populateInfoWindow(marker, infowindow) {
 		// position of the streetview image, then calculate the heading, then get a
 		// panorama from that and set the options
 		function getStreetView(data, status) {
+
 			if (status == google.maps.StreetViewStatus.OK) {
 				var nearStreetViewLocation = data.location.latLng;
 				var heading = google.maps.geometry.spherical.computeHeading(
@@ -405,16 +390,16 @@ function populateInfoWindow(marker, infowindow) {
 				infowindow.setContent('<div class="map-info-box"><h3>' + marker.title + '</h3><p class="box-text">Sorry! No Street View Found</p></div>');
 			}
 		}
-		// Use streetview service to get the closest streetview image within
-		// 50 meters of the markers position
+		// Use streetview service to get the closest streetview image within 50 meters of the markers position
 		streetViewService.getPanoramaByLocation(marker.position, radius, getStreetView);
 		// Open the infowindow on the correct marker.
 		infowindow.open(map, marker);
 	}
 }
 
-// This function will loop through the markers array and display them all.
+// display all the markers
 function showListings() {
+
 	var bounds = new google.maps.LatLngBounds();
 	// Extend the boundaries of the map for each marker and display the marker
 	for (var i = 0; i < markers.length; i++) {
@@ -424,7 +409,7 @@ function showListings() {
 	map.fitBounds(bounds);
 }
 
-// create the marker icons, size color etc.
+// create the marker icons
 function createIcon(markerColor) {
 
 	var markerImage = new google.maps.MarkerImage(
@@ -436,8 +421,133 @@ function createIcon(markerColor) {
 	new google.maps.Size(24, 34));
 	return markerImage;
 }
+
+// hide all the markers
+function hideMarkers(markers) {
+
+	for (var i = 0; i < markers.length; i++) {
+		markers[i].setMap(null);
+	}
+}
+
+// This function fires when the user selects a searchbox picklist item.
+function searchBoxPlaces(searchBox) {
+
+	hideMarkers(placeMarkers);
+	var places = searchBox.getPlaces();
+	// For each place, get the icon, name and location.
+	if (places.length == 0) {
+		window.alert('We did not find any places matching that search!');
+	} else {
+	// For each place, get the icon, name and location.
+	createMarkersForPlaces(places);
+	}
+}
+
+// This function fires when the user select "go" on the places search.
+function textSearchPlaces() {
+
+	var bounds = map.getBounds();
+	hideMarkers(placeMarkers);
+	var placesService = new google.maps.places.PlacesService(map);
+		placesService.textSearch({
+		query: document.getElementById('places-search').value,
+		bounds: bounds
+	}, function(results, status) {
+		if (status === google.maps.places.PlacesServiceStatus.OK) {
+		createMarkersForPlaces(results);
+		}
+	});
+}
+
+// This function creates markers for each place found in either places search.
+function createMarkersForPlaces(places) {
+
+	var bounds = new google.maps.LatLngBounds();
+	for (var i = 0; i < places.length; i++) {
+		var place = places[i];
+		var icon = {
+		url: place.icon,
+		size: new google.maps.Size(35, 35),
+		origin: new google.maps.Point(0, 0),
+		anchor: new google.maps.Point(15, 34),
+		scaledSize: new google.maps.Size(25, 25)
+		};
+		// Create a marker for each place.
+		var marker = new google.maps.Marker({
+			map: map,
+			icon: icon,
+			title: place.name,
+			position: place.geometry.location,
+			id: place.place_id
+		});
+		// Create a single infowindow to be used with the place details information
+		var placeInfoWindow = new google.maps.InfoWindow();
+		// If a marker is clicked, do a place details search on it in the next function.
+		marker.addListener('click', function() {
+			if (placeInfoWindow.marker == this) {
+				console.log("This infowindow already is on this marker!");
+			} else {
+				getPlacesDetails(this, placeInfoWindow);
+			}
+		});
+		placeMarkers.push(marker);
+		if (place.geometry.viewport) {
+			// Only geocodes have viewport.
+			bounds.union(place.geometry.viewport);
+		} else {
+			bounds.extend(place.geometry.location);
+		}
+	}
+	map.fitBounds(bounds);
+}
+
+// place details search
+function getPlacesDetails(marker, infowindow) {
+
+	var service = new google.maps.places.PlacesService(map);
+	service.getDetails({ placeId: marker.id }, function(place, status) {
+		if (status === google.maps.places.PlacesServiceStatus.OK) {
+			// Set the marker property on this infowindow so it isn't created again.
+			infowindow.marker = marker;
+			var innerHTML = '<div class="places-info-box">';
+			if (place.name) {
+				innerHTML += '<h3>' + place.name + '</h3>';
+			}
+			if (place.formatted_address) {
+				innerHTML += '<br>' + place.formatted_address;
+			}
+			if (place.formatted_phone_number) {
+				innerHTML += '<br>' + place.formatted_phone_number;
+			}
+			if (place.opening_hours) {
+				innerHTML += '<br><br><strong>Hours:</strong><br>' +
+				place.opening_hours.weekday_text[0] + '<br>' +
+				place.opening_hours.weekday_text[1] + '<br>' +
+				place.opening_hours.weekday_text[2] + '<br>' +
+				place.opening_hours.weekday_text[3] + '<br>' +
+				place.opening_hours.weekday_text[4] + '<br>' +
+				place.opening_hours.weekday_text[5] + '<br>' +
+				place.opening_hours.weekday_text[6];
+			}
+			if (place.photos) {
+				innerHTML += '<br><br><img src="' + place.photos[0].getUrl(
+				{maxHeight: 100, maxWidth: 200}) + '">';
+			}
+			innerHTML += '</div>';
+			infowindow.setContent(innerHTML);
+			infowindow.open(map, marker);
+			// Make sure the marker property is cleared if the infowindow is closed.
+			infowindow.addListener('closeclick', function() {
+			infowindow.marker = null;
+			});
+		}
+	});
+}
+
 // Google map error handling
 function mapError() {
+
 	var mapError = document.getElementById('map-error');
 	mapError.innerHTML = '<h2>Sorry! Map Error</h2><p>There seems to be a problem loading the map, please try reloading the page</p>';
 }
@@ -448,11 +558,8 @@ var viewModel = function(data) {
     var self = this;
 
     self.viewMarkers = ko.observableArray(markers); // array containing markers as created by Google initMap()
-
     self.selected = ko.observable(''); // the users search selection
-
     self.selectedLocations = ko.observableArray(); // markers contained in search results
-
 
 	// filter the text input
     self.setLocations = ko.computed(function() {
@@ -465,12 +572,13 @@ var viewModel = function(data) {
 	        	self.selectedLocations.push(value);
 	    	}
 		});
-    	hideMarkers(); // hide all of the original markers
+    	clearMarkers(); // clear all of the original markers
     	showSelectedMarkers(); // show the results of the search
 	});
 
-	// hide markers
-	function hideMarkers() {
+	// clear the markers
+	function clearMarkers() {
+
 		var m = markers.length
 		for (var i = 0; i < m; i++) {
 			markers[i].setVisible(false); // hide all the markers
@@ -479,6 +587,7 @@ var viewModel = function(data) {
 
 	// show the search result markers
 	function showSelectedMarkers() {
+
 		var s = self.selectedLocations().length
 		for (var i = 0; i < s; i++) {
 			self.selectedLocations()[i].setVisible(true); // show the selected markers
@@ -488,10 +597,11 @@ var viewModel = function(data) {
 
 	// center map on the markers
 	self.centerMarker = function() {
+
 		var bounds = new google.maps.LatLngBounds(); // define the boundary of the markers
 		var s = self.selectedLocations().length
 		for (var i = 0; i < s; i++) {
-			self.selectedLocations()[i].setVisible(true); // show the selected markers
+			self.selectedLocations()[i].setVisible(true); // show the selected location markers
 			self.selectedLocations()[i].setMap(map);
 			bounds.extend(self.selectedLocations()[i].position);
 		}
@@ -500,6 +610,7 @@ var viewModel = function(data) {
 
 	// icon generator
 	self.currentIcon = function(color) {
+
 		var iconType = new google.maps.MarkerImage(
 			'http://chart.googleapis.com/chart?chst=d_map_spin&chld=1.15|0|' + color + '|40|_|%E2%80%A2',
 			new google.maps.Size(23, 34),
@@ -509,20 +620,24 @@ var viewModel = function(data) {
 		return iconType;
 	};
 
+	// UI controls ======================================================
 	// toggle slide menu
 	self.menuClose = ko.observable(false); // starting menu state (open)
 
     self.toggleSlideMenu = function() {
+
 		self.menuClose(!self.menuClose());
     }; //ref - https://stackoverflow.com/questions/39799600/how-to-use-knockoutjs-click-binding-to-create-a-hamburger-menu
 
     // close slide menu
     self.closeSlideMenu = function() {
+
 		self.menuClose(!self.menuClose());
     }
 
     // show all button - slide menu show all places
     self.showAll = function() {
+
     	self.selected(''); // removes any current search term from input
     };
 
@@ -530,18 +645,22 @@ var viewModel = function(data) {
 	self.infoScreenVisible = ko.observable(false); // initial value
 	// open map info screen
 	self.openInfoScreen = function() {
+
 		return self.infoScreenVisible(true);
 	};
 	// close map info screen
 	self.closeInfoScreen = function() {
+
 		return self.infoScreenVisible(false);
 	};
 
     // close map info screen and slide menu
     self.closeAll = function() {
+
     	self.closeInfoScreen();
     	self.closeSlideMenu();
-    }
+    };
+    // end UI controls
 
 	self.currentPlace = ko.observable()
 	// selected list item - onclick function
@@ -554,11 +673,12 @@ var viewModel = function(data) {
 			self.selectedLocations()[i].icon = self.currentIcon('3fedb1'); // set default icon color
 			self.selectedLocations()[i].setVisible(false); // hide all the markers
 		}
+		// show the selected markers
 		showSelectedMarkers();
+
 		self.currentPlace().setVisible(true); // show the selected list item marker
 		self.currentPlace().animation = google.maps.Animation.BOUNCE; // animate its marker
 		self.currentPlace().icon = self.currentIcon('be23e4'); // change the icons color to highlight color
-
 		self.openInfoScreen(); // open the map info screen
 
 		// request the wikipedia data
@@ -566,19 +686,21 @@ var viewModel = function(data) {
 
 		// request the flickr data
 		self.flickrData(self.currentPlace().title.toLowerCase());
-
 		var lat = self.currentPlace().position.lat();
 		var lng = self.currentPlace().position.lng();
+
 		// request the foursquare data
-		self.fourSquareData(lat, lng);
+		self.fourSquareData(lat, lng); // use the currentPlace() lat,lng values as the argument
 	};
 
+	// AJAX requests =========================================================
 	// wikipedia request observables
 	self.wikiArray = ko.observableArray(); // array to store wikipedia results
 	self.wikiError = ko.observable(false); // wikipedia user error message
 
 	// wikipedia AJAX request
 	self.wikiData =  function(request) {
+
 		var url = 'https://en.wikipedia.org/w/api.php?action=opensearch&search=' + request.title + '&format=json&callback=wikiCallback';
 		$.ajax({
 			url: url,
@@ -586,9 +708,9 @@ var viewModel = function(data) {
 			jsonp: 'callback',
 			timeout: 2000,
 			success: function(response) {
+
 				self.wikiArray.removeAll(); // clear the array
 				self.wikiError(false); // remove any error message
-
 				// load wikipedia data
 	            var wikiName = response[1];
 	            var wikiDescription = response[2];
@@ -596,7 +718,6 @@ var viewModel = function(data) {
 	            var p = wikiName.length;
 	            // run a loop to populate an array with objects containing a name, description and url
 	            for (var i = 0; i < p; i++) {
-
 	                if (wikiDescription !== '') {
 	                	var descriptionStr =  wikiDescription[i];
 	                }
@@ -604,6 +725,7 @@ var viewModel = function(data) {
 	            }
 			},
 			error: function(response) {
+
 				console.log('wikipedia api request error');
 				self.wikiError(true); // display error message to user
 			}
@@ -626,9 +748,10 @@ var viewModel = function(data) {
 	  			jsonFlickrFeed(json);
 			},
 			error: function(e) {
+
 		      	var error = e.error;
 		        if (error) {
-			        console.log(error, 'Sorry! There was an error loading Flickr images, try closing tab and reopening.');
+			        console.log(error, 'flickr api error');
 			        self.flickrError(true);
 		        }
 			}
@@ -638,8 +761,10 @@ var viewModel = function(data) {
 	// foursquare request observables
 	self.fourSqArray = ko.observableArray(); // array to store foursquare results
 	self.fourSqError = ko.observable(false); // foursquare user error message
+
 	// AJAX - four square request
 	self.fourSquareData =  function(lat, lng) {
+
 		var clientId = 'LT32IBE4RVQNKHSRD1MQ3FP2QOQ4D5ZZEBOKRB5LSKAK1QWH';
 		var code = 'VEO2CSXAPNACQNG0JSY30CZO1BF2RFDMOTCAX3EMRG0GTIYA';
 		var version = '20170801';
@@ -656,9 +781,9 @@ var viewModel = function(data) {
 				'&m=foursquare',
 			timeout: 2000,
 			success: function(data) {
+
 				self.fourSqArray.removeAll(); // clear the array
 				self.fourSqError(false); // remove any error message
-
 				//load foursquare data
 				var fourSqData = data.response.venues;
 				var v = fourSqData.length;
@@ -683,15 +808,17 @@ var viewModel = function(data) {
 				console.log(data, 'success data');
 			},
 			error: function(response) {
+
 				console.log('foursquare api request error');
 				self.fourSqError(true); // display error message to user
 			}
 		});
 	};
-};
+}; // end viewModel
 
 // process flickr api response - couldn't get this to work inside viewModel?
 function jsonFlickrFeed(json) {
+
 	console.log(json, 'jsonFlickrFeed');
 	$('#images').empty(); // empty previously loaded images
 	$.each(json.items, function(i, item) {

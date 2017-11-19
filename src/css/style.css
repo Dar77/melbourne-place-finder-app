@@ -57,6 +57,16 @@ img {
 	right: 0;
 }
 
+.places-info-box {
+    margin: 1em;
+    font-size: 14px;
+    color: black;
+}
+
+.places-text {
+	font: 14px/0.1em "Oxygen", sans-serif;
+}
+
 .map-info-box {
 	border: 2px dotted #3fedb1;
     border-radius: 10px;
@@ -94,7 +104,7 @@ img {
 	position: fixed;
 	top: 2%;
 	right: 3%;
-	z-index: 3000;
+	z-index: 700;
 	width: 50px;
 	height: 50px;
 	border-radius: 25px;
@@ -132,7 +142,7 @@ img {
 	background: #131312;
 	color: white;
 	text-align: center;
-	z-index: 1000;
+	z-index: 300;
 	border-right: 2px solid #3fedb1;
 	overflow: hidden;
 	transition: left 0.9s ease;
@@ -194,7 +204,7 @@ img {
 	top: 0px;
 	background: #131312;
 	border-bottom: 1px solid #3fedb1;
-	z-index: 4000;
+	z-index: 1000;
 	color: white;
 	opacity: 1;
 	transition: opacity 2s ease;
@@ -203,7 +213,8 @@ img {
 }
 
 .custom-button {
-	margin: 1em 0.5em 1em;
+	background: #272827;
+	margin: 1em 0.5em 1em 0;
 }
 
 .place-category {
@@ -218,11 +229,15 @@ img {
 .wikipedia-links {
 	padding: 0;
 }
+
+.info-search {
+    padding: 0;
+}
 /* end - map info screen styles */
 
 /* bootstrap styles */
 .input-group {
-    padding: 5% 10% 5%;
+    padding: 1em 0;
 }
 
 .btn-success:focus {
@@ -249,6 +264,7 @@ img {
     color: #3fedb1;
     opacity: 1;
     outline: none;
+    margin: 0.5em;
 }
 
 /* Media queries ====================================================================================================================================================*/

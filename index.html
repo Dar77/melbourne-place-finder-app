@@ -52,13 +52,6 @@
 						center map
 					</button>
 					<hr>
-					<h2>Search Map</h2>
-					<div class="input-group">
-						<input id="map-search" type="text" class="form-control" placeholder="general map search" aria-label="select a location">
-						<span class="input-group-btn">
-						<button id="map-places" class="btn btn-secondary" type="button">Go!</button>
-						</span>
-					</div>
 				</div>
 			</div>
 			<!-- map -->
@@ -71,11 +64,25 @@
 				</div>
 	    	</div>
 	    	<div class="row map-info" id="map-info" data-bind="visible: infoScreenVisible">
-	    		<div class="col-xs-12 col-sm-12 col-md-12">
-		        	<button type="button" class="close" data-bind="click: closeInfoScreen" aria-label="close">
-						<span aria-hidden="true">&times;</span>
+	    		<div class="col-xs-12 col-sm-12 col-md-6 col-lg-3">
+					<div class="input-group info-search">
+						<input id="places-search" type="text" class="form-control" placeholder="general map search" aria-label="select a location">
+						<span class="input-group-btn">
+						<button id="go-places" class="btn btn-secondary" type="button">Go!</button>
+						</span>
+					</div>
+				</div>
+				<div class="col-xs-12 col-sm-12 col-md-6 col-lg-9">
+		        	<button type="button" class="btn btn-success custom-button" data-bind="click: closeAll" aria-label="close">
+						view map
 					</button>
-	    		</div>
+		        	<button type="button" class="btn btn-success custom-button" data-bind="click: centerMarker" aria-label="center map on locations">
+						center map
+					</button>
+		        	<button type="button" class="btn btn-success custom-button" data-bind="click: closeInfoScreen" aria-label="close screen">
+						close screen
+					</button>
+				</div>
 				<!-- wikipedia api section -->
 		        <div  class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
 		        	<h2>Related Wikipedia Links</h2>
@@ -92,17 +99,6 @@
 				</div>
 				<!-- flikr api section -->
 		        <div  class="col-xs-12 col-sm-6 col-md-4 col-lg-6">
-		        	<h2>Controls</h2>
-		        	<hr>
-		        	<button type="button" class="btn btn-success custom-button" data-bind="click: closeInfoScreen" aria-label="close screen">
-						close screen
-					</button>
-		        	<button type="button" class="btn btn-success custom-button" data-bind="click: closeAll" aria-label="close">
-						view map
-					</button>
-		        	<button type="button" class="btn btn-success custom-button" data-bind="click: centerMarker" aria-label="center map on locations">
-						center map
-					</button>
 		        	<h2>Flickr Images</h2>
 		        	<hr>
 		        	<p data-bind="visible: flickrError">Sorry! There was an error loading Flickr images, try closing tab and reopening.</p>
@@ -131,7 +127,7 @@
 						<span aria-hidden="true">&times;</span>
 					</button>
 	    		</div>
-	    	</div>
+	    	</div> <!-- end map info screen -->
 
 	    </div> <!-- end .container-fluid -->
 	    <script> // webfont loader script to load google fonts asynchronously
@@ -147,7 +143,7 @@
 			s.parentNode.insertBefore(wf, s);
 			})(document);
 	    </script>
-	    <script defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDFWuEoaxjSgXjvmdpCQE6dWiBWp8OV0fU&libraries=places,drawing,geometry&v=3&callback=initMap" onerror="mapError()"></script>
+	    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDFWuEoaxjSgXjvmdpCQE6dWiBWp8OV0fU&libraries=places,drawing,geometry&v=3&callback=initMap" onerror="mapError()"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 		<script src="src/js/knockout.js"></script>
 		<script src="src/js/app.js"></script>
