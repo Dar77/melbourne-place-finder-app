@@ -724,7 +724,7 @@ var viewModel = function(data) {
 	                self.wikiArray.push({name: wikiName[i], description: descriptionStr, url: wikiUrl[i]});
 	            }
 			},
-			error: function(response) {
+			error: function(e) {
 
 				console.log('wikipedia api request error');
 				self.wikiError(true); // display error message to user
@@ -742,6 +742,7 @@ var viewModel = function(data) {
 		    url: 'https://api.flickr.com/services/feeds/photos_public.gne',
 		    dataType: 'jsonp',
 		    data: { 'tags': request, 'format': 'json', 'safe_search': 1, 'content_type': 1, 'per_page': 5},
+			timeout: 4000,
 			success: function(json) {
 
 				self.flickrError(false);
@@ -751,7 +752,7 @@ var viewModel = function(data) {
 
 		      	var error = e.error;
 		        if (error) {
-			        console.log(error, 'flickr api error');
+			        console.log(e, 'flickr api error');
 			        self.flickrError(true);
 		        }
 			}
@@ -804,10 +805,8 @@ var viewModel = function(data) {
 					}
 	                self.fourSqArray.push({name: fourSqName, category: fourSqCategories, address: fourSqAddress, city: fourSqCity, state: fourSqState});
 	            }
-	           	console.log(self.fourSqArray(), 'four square loop generated array');
-				console.log(data, 'success data');
 			},
-			error: function(response) {
+			error: function(e) {
 
 				console.log('foursquare api request error');
 				self.fourSqError(true); // display error message to user
@@ -821,9 +820,14 @@ function jsonFlickrFeed(json) {
 
 	console.log(json, 'jsonFlickrFeed');
 	$('#images').empty(); // empty previously loaded images
-	$.each(json.items, function(i, item) {
-		$('<img />').attr('src', item.media.m).appendTo('#images');
-	});
+    if (json.items) {
+		$.each(json.items, function(i, item) {
+			$('<img />').attr('src', item.media.m).appendTo('#images');
+		});
+    } else { // flickr error handling
+        console.log('flickr api error');
+        window.alert('Sorry! There was a problem loading Flickr images.')
+	}
 };
 
 //ko.applyBindings(new ViewModel(modelData));
