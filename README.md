@@ -118,4 +118,5 @@ ___
 - Jsonp-request-error-handling - [https://stackoverflow.com/questions/19035557/jsonp-request-error-handling](https://stackoverflow.com/questions/19035557/jsonp-request-error-handling)
 - How to toggle a menu with knockout - [https://stackoverflow.com/questions/39799600/how-to-use-knockoutjs-click-binding-to-create-a-hamburger-menu](https://stackoverflow.com/questions/39799600/how-to-use-knockoutjs-click-binding-to-create-a-hamburger-menu)
 - Hiding scrollbar reference - [https://blogs.msdn.microsoft.com/kurlak/2013/11/03/hiding-vertical-scrollbars-with-pure-css-in-chrome-ie-6-firefox-opera-and-safari](https://blogs.msdn.microsoft.com/kurlak/2013/11/03/hiding-vertical-scrollbars-with-pure-css-in-chrome-ie-6-firefox-opera-and-safari)
-- Also made use of udacity google map api class code, adapted from.
+- Used a favicon code and icon generator - [https://realfavicongenerator.net/](https://realfavicongenerator.net/)
+- Also made use of Udacity Google Map api class code, adapted from.
