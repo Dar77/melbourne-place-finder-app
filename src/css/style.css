@@ -38,6 +38,27 @@ img {
     margin: 10px;
 }
 
+/* styles for preloader */
+.loading {
+	margin-top: 300px;
+	text-align: center;
+	text-transform: uppercase;
+	font: 1.5em/1.5em sans-serif;
+	color: #3fedb1;
+}
+
+.preloader {
+	bottom:0;
+	height: 100%;
+	left: 0;
+	position: absolute;
+	right: 0;
+	z-index: 3000;
+	background: #131312;
+}
+/* end - preloader styles */
+
+
 .title-text {
 	font: 0.5em/1.5em "Codystar", sans-serif;
 	color: #3fedb1;
@@ -90,11 +111,14 @@ img {
 	height: 250px;
 }
 
-.map-error {
+.map-error { /* google map error message styles */
     padding: 1em;
-    margin: 20% auto;
+    margin: 10% auto;
     text-align: center;
     max-width: 70%;
+    color: white;
+    background: #131312;
+    border: 1px solid #422921;
 }
 /* end - google map styles */
 
@@ -151,11 +175,11 @@ img {
 .inner {
 	overflow: auto;
 	height: 99%;
-	-ms-overflow-style: none; /* hide scrollbars in IE 10+ */
+	-ms-overflow-style: none; /* hide scrollbars in IE 10+ - ref #1.*/
 }
 
 ::-webkit-scrollbar {
-	display: none; /* hide scrollbars in webkit-based browsers*/
+	display: none; /* hide scrollbars in webkit-based browsers - ref #1.*/
 }
 
 .number-text {
@@ -198,7 +222,7 @@ img {
 /* end - slide menu styles */
 
 /* map info screen styles */
-.map-info { /* visible styles */
+.map-info {
 	padding: 2em 1em;
 	position: absolute;
 	top: 0px;
@@ -232,6 +256,11 @@ img {
 
 .info-search {
     padding: 0;
+}
+
+.load-error { /* error message styles */
+	border: 1px solid #422921;
+	padding: 1em;
 }
 /* end - map info screen styles */
 
@@ -319,4 +348,4 @@ img {
 	}
 }
 
-/* hiding scrollbar reference - https://blogs.msdn.microsoft.com/kurlak/2013/11/03/hiding-vertical-scrollbars-with-pure-css-in-chrome-ie-6-firefox-opera-and-safari */
+/* #1. hiding scrollbar reference - https://blogs.msdn.microsoft.com/kurlak/2013/11/03/hiding-vertical-scrollbars-with-pure-css-in-chrome-ie-6-firefox-opera-and-safari */
