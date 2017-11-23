@@ -1,3 +1,4 @@
 node_modules
 NOT-USED/*
-src/images/*
+src/css/main.css
+src/js/main.js
