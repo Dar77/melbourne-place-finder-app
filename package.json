@@ -1,0 +1,30 @@
+{
+  "name": "frontend-nanodegree-single-page-application-project",
+  "version": "1.0.0",
+  "description": "melbourne place finder app",
+  "main": "Gruntfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Dar77/melbourne-place-finder-app.git"
+  },
+  "author": "Darren Ware",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Dar77/melbourne-place-finder-app/issues"
+  },
+  "homepage": "https://github.com/Dar77/melbourne-place-finder-app#readme",
+  "devDependencies": {
+    "grunt": "^1.0.1",
+    "grunt-contrib-clean": "^1.1.0",
+    "grunt-contrib-concat": "^1.0.1",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-contrib-cssmin": "^2.2.1",
+    "grunt-contrib-uglify": "^3.1.0",
+    "grunt-cssnano": "^2.1.0",
+    "grunt-mkdir": "^1.0.0"
+  },
+  "dependencies": {}
+}
