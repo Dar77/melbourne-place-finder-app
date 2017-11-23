@@ -108,8 +108,9 @@ ___
 ## API's Used in Project
 
 - **Google Maps API** maps, streetview, places etc.
+- **MediaWiki API** description and link from **Wikipedia**.
 - **Foursquare API** location data.
-- **Fickr API** images.
+- **Fickr API** location images.
 
 ## References Used in Project
 
