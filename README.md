@@ -110,3 +110,11 @@ ___
 - **Google Maps API** maps, streetview, places etc.
 - **Foursquare API** location data.
 - **Fickr API** images.
+
+## References Used in Project
+
+- Re-center google map on resize - [https://stackoverflow.com/questions/8558226/recenter-a-google-map-after-container-changed-width](https://stackoverflow.com/questions/8558226/recenter-a-google-map-after-container-changed-width)
+- Text input search function - [https://opensoul.org/2011/06/23/live-search-with-knockoutjs/](https://opensoul.org/2011/06/23/live-search-with-knockoutjs/)
+- Jsonp-request-error-handling - [https://stackoverflow.com/questions/19035557/jsonp-request-error-handling](https://stackoverflow.com/questions/19035557/jsonp-request-error-handling)
+- How to toggle a menu with knockout - [https://stackoverflow.com/questions/39799600/how-to-use-knockoutjs-click-binding-to-create-a-hamburger-menu](https://stackoverflow.com/questions/39799600/how-to-use-knockoutjs-click-binding-to-create-a-hamburger-menu)
+- Also made use of udacity google map api class code, adapted from.
