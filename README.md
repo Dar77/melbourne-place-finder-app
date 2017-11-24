@@ -114,11 +114,12 @@ ___
 
 ## References Used in Project
 
-- event listeners and markers - [https://developers.google.com/maps/documentation/javascript/markers](https://developers.google.com/maps/documentation/javascript/markers)
+- Event listeners and markers - [https://developers.google.com/maps/documentation/javascript/markers](https://developers.google.com/maps/documentation/javascript/markers)
 - Re-center google map on resize - [https://stackoverflow.com/questions/8558226/recenter-a-google-map-after-container-changed-width](https://stackoverflow.com/questions/8558226/recenter-a-google-map-after-container-changed-width)
 - Text input search function - [https://opensoul.org/2011/06/23/live-search-with-knockoutjs/](https://opensoul.org/2011/06/23/live-search-with-knockoutjs/)
 - Jsonp-request-error-handling - [https://stackoverflow.com/questions/19035557/jsonp-request-error-handling](https://stackoverflow.com/questions/19035557/jsonp-request-error-handling)
 - How to toggle a menu with knockout - [https://stackoverflow.com/questions/39799600/how-to-use-knockoutjs-click-binding-to-create-a-hamburger-menu](https://stackoverflow.com/questions/39799600/how-to-use-knockoutjs-click-binding-to-create-a-hamburger-menu)
+- Flickr api request - [https://www.sitepoint.com/load-flickr-photos-using-jsonapi/](https://www.sitepoint.com/load-flickr-photos-using-jsonapi/)
 - Hiding scrollbar reference - [https://blogs.msdn.microsoft.com/kurlak/2013/11/03/hiding-vertical-scrollbars-with-pure-css-in-chrome-ie-6-firefox-opera-and-safari](https://blogs.msdn.microsoft.com/kurlak/2013/11/03/hiding-vertical-scrollbars-with-pure-css-in-chrome-ie-6-firefox-opera-and-safari)
 - Used a favicon code and icon generator - [https://realfavicongenerator.net/](https://realfavicongenerator.net/)
 - Also made use of Udacity Google Map api class code, adapted from.
