@@ -168,6 +168,8 @@ img {
 	z-index: 300;
 	border-right: 2px solid #3fedb1;
 	overflow: hidden;
+	will-change: transform; /* suggestion to browser to place this element on its own layer */
+ 	transform: translateZ(0); /* places selected element on its own layer, (for older browsers)*/
 	transition: left 0.9s ease;
 }
 
