@@ -60,16 +60,7 @@ var modelData = {
 			location: {lat: -37.846914, lng: 144.97137}
 		}
 	],
-}; // end model data
-
-// Initialize Google Map ========================================================================================
-var map;
-var markers = []; // array for map markers
-var placeMarkers = []; // array for google places markers
-
-function initMap() {
-
-	var styles = [ // custom map styles
+	styles: [ // google map custom styles data
 		{
 		'elementType': 'geometry',
 		'stylers': [
@@ -264,7 +255,18 @@ function initMap() {
 		  }
 		]
 		}
-	];
+	]
+}; // end model data
+
+
+// Initialize Google Map ========================================================================================
+var map;
+var markers = []; // array for map markers
+var placeMarkers = []; // array for google places markers
+
+function initMap() {
+
+	var styles = modelData.styles; // add the custom styles
 
 	map = new google.maps.Map(document.getElementById('map'), { // add the main location for map
 		center: {lat:  -37.813611, lng: 144.963056},
@@ -303,28 +305,36 @@ function initMap() {
 		});
 		// Push the marker to our array of markers.
 		markers.push(marker);
-
-		// Create an onclick event to open an infowindow at each marker.
-		marker.addListener('click', function() {
-			populateInfoWindow(this, largeInfowindow);
-			animateMarker(this, defaultIcon, highlightedIcon);
-		});
-		// Two event listeners - one for mouseover, one for mouseout,
-		// to change the colors back and forth.
-		marker.addListener('mouseover', function() {
-			this.setIcon(highlightedIcon);
-		});
-		marker.addListener('mouseout', function() {
-			this.setIcon(defaultIcon);
-		});
-
+		// Event listener for clicked marker
+		marker.addListener('click', markerClick);
+		// Event listeners - one for mouseover, one for mouseout
+		marker.addListener('mouseover', markerHover);
+		marker.addListener('mouseout', markerDefault);
     }
 
     ko.applyBindings(new viewModel(modelData)); // apply knockout js bindings
 
+    // run this when marker is clicked
+    function markerClick() {
+		// ref - #0. listed at bottom of file
+		populateInfoWindow(this, largeInfowindow);
+		animateMarker(this, defaultIcon, highlightedIcon);
+    }
+    // run this on marker hover
+    function markerHover() {
+
+		this.setIcon(highlightedIcon);
+    }
+    //run this on marker mouse out
+    function markerDefault() {
+
+		this.setIcon(defaultIcon);
+    }
+
 	// Listen for the event fired when the user selects a prediction from the picklist
 	searchBox.addListener('places_changed', function() {
-	searchBoxPlaces(this);
+
+		searchBoxPlaces(this);
 	});
 
 	// Listen for the event fired when the user selects a prediction and clicks the "go" button
@@ -335,14 +345,17 @@ function initMap() {
 
 	// event listener for resize on window
 	google.maps.event.addDomListener(window, 'resize', function() {
-	   map.setCenter(mapCenter); // set map to center if window is resized
+
+		map.setCenter(mapCenter); // set map to center if window is resized
 	}); // ref - #1. listed at bottom of file
 
     showListings(); // Initial layout for map and markers
 
 } // end initMap()
 
+
 // google map api functions =============================================================================================
+
 // animate the selected marker
 function animateMarker(marker, defaultIcon, highlightedIcon) {
 
@@ -398,18 +411,6 @@ function populateInfoWindow(marker, infowindow) {
 	}
 }
 
-// display all the markers
-function showListings() {
-
-	var bounds = new google.maps.LatLngBounds();
-	// Extend the boundaries of the map for each marker and display the marker
-	for (var i = 0; i < markers.length; i++) {
-		markers[i].setMap(map);
-		bounds.extend(markers[i].position);
-	}
-	map.fitBounds(bounds);
-}
-
 // create the marker icons
 function createIcon(markerColor) {
 
@@ -421,6 +422,18 @@ function createIcon(markerColor) {
 	new google.maps.Point(10, 34),
 	new google.maps.Size(24, 34));
 	return markerImage;
+}
+
+// display all the markers
+function showListings() {
+
+	var bounds = new google.maps.LatLngBounds();
+	// Extend the boundaries of the map for each marker and display the marker
+	for (var i = 0; i < markers.length; i++) {
+		markers[i].setMap(map);
+		bounds.extend(markers[i].position);
+	}
+	map.fitBounds(bounds);
 }
 
 // hide all the markers
@@ -484,20 +497,22 @@ function createMarkersForPlaces(places) {
 		});
 		// Create a single infowindow to be used with the place details information
 		var placeInfoWindow = new google.maps.InfoWindow();
-		// If a marker is clicked, do a place details search on it in the next function.
-		marker.addListener('click', function() {
-			if (placeInfoWindow.marker == this) {
-				console.log("This infowindow already is on this marker!");
-			} else {
-				getPlacesDetails(this, placeInfoWindow);
-			}
-		});
+		marker.addListener('click', clickedPlaceMarker);
 		placeMarkers.push(marker);
 		if (place.geometry.viewport) {
 			// Only geocodes have viewport.
 			bounds.union(place.geometry.viewport);
 		} else {
 			bounds.extend(place.geometry.location);
+		}
+	}
+	// If a marker is clicked, do a place details search on it in the next function.
+	function clickedPlaceMarker() {
+
+		if (placeInfoWindow.marker == this) {
+			console.log("This infowindow already is on this marker!");
+		} else {
+			getPlacesDetails(this, placeInfoWindow);
 		}
 	}
 	map.fitBounds(bounds);
@@ -553,6 +568,7 @@ function mapError() {
 	mapError.innerHTML = '<div class="map-error"><h2>Sorry! Map Error</h2><p>There seems to be a problem loading the map, please try reloading the page</p></div>';
 }
 
+
 // View Model ==================================================================================================
 var viewModel = function(data) {
 
@@ -564,7 +580,7 @@ var viewModel = function(data) {
 
 	// filter the text input
     self.setLocations = ko.computed(function() { // ref - #2. listed at bottom of file
-
+    	// first clear the selected marker array
 	    self.selectedLocations.removeAll();
 	    // use self.viewMarkers(), to read value
 	    self.viewMarkers().forEach(function(value) {
@@ -828,6 +844,7 @@ function jsonFlickrFeed(json) {
 }
 
 // reference material
+// #0. removing function from eventlistener and loop (eg  marker.addListener('click', toggleBounce);) - https://developers.google.com/maps/documentation/javascript/markers
 // #1. recenter google map on resize - https://stackoverflow.com/questions/8558226/recenter-a-google-map-after-container-changed-width
 // #2. search function - https://opensoul.org/2011/06/23/live-search-with-knockoutjs/
 // #3. jsonp-request-error-handling - https://stackoverflow.com/questions/19035557/jsonp-request-error-handling
