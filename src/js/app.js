@@ -833,7 +833,7 @@ var viewModel = function(data) {
 }; // end viewModel
 
 // process flickr api response - couldn't get this to work inside viewModel?
-function jsonFlickrFeed(json) {
+function jsonFlickrFeed(json) { // ref - #5.
 
 	$('#images').empty(); // empty previously loaded images
     if (json.items) {
@@ -849,4 +849,5 @@ function jsonFlickrFeed(json) {
 // #2. search function - https://opensoul.org/2011/06/23/live-search-with-knockoutjs/
 // #3. jsonp-request-error-handling - https://stackoverflow.com/questions/19035557/jsonp-request-error-handling
 // #4. how to toggle a menu with knockout - https://stackoverflow.com/questions/39799600/how-to-use-knockoutjs-click-binding-to-create-a-hamburger-menu
+// #5. flickr api request - https://www.sitepoint.com/load-flickr-photos-using-jsonapi/
 // also made use of udacity google map api class code / adapted from
