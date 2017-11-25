@@ -259,6 +259,10 @@ img {
     padding: 0;
 }
 
+.flickr-msg {
+	margin-top: 2em;
+}
+
 .load-error { /* error message styles */
 	border: 1px solid #422921;
 	padding: 1em;

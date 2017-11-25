@@ -695,9 +695,9 @@ var viewModel = function(data) {
 
 		// request the flickr data
 		self.flickrData(self.currentPlace().title);
+
 		var lat = self.currentPlace().position.lat();
 		var lng = self.currentPlace().position.lng();
-
 		// request the foursquare data
 		self.fourSquareData(lat, lng); // use the currentPlace() lat,lng values as the argument
 	};
@@ -738,34 +738,47 @@ var viewModel = function(data) {
 
 			console.log('wikipedia api request error');
 			self.wikiError(true); // display error message to user
-		})
+		});
 	};
 
 	// flickr request observables
 	self.flickrArray = ko.observableArray(); // array to store flickr results
 	self.flickrError = ko.observable(false); // flickr user error message
+	self.flickrMsg = ko.observable(false); // user message
 
-	// AJAX - flickr request TODO - try the api key version
+	// AJAX - flickr request
 	self.flickrData = function(request) {
 
+		var key = '6d2080b380bf4aa1eb7c38bbc597ac9d';
 		$.ajax({
 
-		    url: 'https://api.flickr.com/services/feeds/photos_public.gne?callback=jsonFlickrFeed',
-		    dataType: 'jsonp',
-			jsonp: 'callback',
-		    data: { 'tags': request, 'format': 'json'},
-		    timeout: 5000,
-		    // response handled by jsonFlickrFeed(json) callback function
-		}).done(function(response) {
-			console.log(response);
-			//self.flickrArray.removeAll();
-			//self.flickrArray.push();
-		}).fail(function(t) {
-	        if( t === "timeout" ) {
+			url: 'https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=' + key + '&tags=' + request + '&text=' + request +
+			'&accuracy=16&safe_search=1&content_type=1&radius=0.1&in_gallery=true&per_page=15&format=json&nojsoncallback=1',
+		    dataType: 'json',
+		}).done(function(response) { // ref - #4. listed at bottom of file
+
+			self.flickrArray.removeAll(); // clear the array
+			self.flickrError(false); // remove any error message
+			// load flickr data
+			var img =  response.photos.photo;
+			var images = response.photos.photo.length;
+            for (var i = 0; i < images; i++) { // fill the flickr array with data from the response
+
+            	var farmId = img[i].farm;
+				var serverId = img[i].server;
+				var id = img[i].id;
+				var secret = img[i].secret;
+				var altString = img[i].title;
+            	var imageString = '<img alt="' + altString + '" src="https://farm' + farmId + '.staticflickr.com/' + serverId + '/' + id + '_' + secret + '.jpg"/>';
+                self.flickrArray.push({image: imageString});
+            }
+            self.flickrMsg(true); // show info message to user
+		}).fail(function(e) {
+
 		        console.log('flickr api error');
 		        self.flickrError(true); // display error message to user
-	        } // ref - #4. listed at bottom of file
-	    })
+		        self.flickrMsg(false); // hide info message
+	    });
 	};
 
 	// foursquare request observables
@@ -820,29 +833,18 @@ var viewModel = function(data) {
 
 			console.log('foursquare api request error');
 			self.fourSqError(true); // display error message to user
-		})
+		});
 	};
 
 	self.googleMapError = ko.observable(false); // hide googleMap error message, shows if map fails to load
 
 }; // end viewModel
 
-// process flickr api response - couldn't get this to work inside viewModel?
-function jsonFlickrFeed(json) { // ref - #5.
-
-	$('#images').empty(); // empty previously loaded images
-    if (json.items) {
-		$.each(json.items, function(i, item) {
-			$('<img />').attr('src', item.media.m).appendTo('#images');
-		});
-    }
-}
 
 // reference material
 // #0. removing function from eventlistener and loop (eg  marker.addListener('click', toggleBounce);) - https://developers.google.com/maps/documentation/javascript/markers
 // #1. recenter google map on resize - https://stackoverflow.com/questions/8558226/recenter-a-google-map-after-container-changed-width
 // #2. search function - https://opensoul.org/2011/06/23/live-search-with-knockoutjs/
-// #3. jsonp-request-error-handling - https://stackoverflow.com/questions/19035557/jsonp-request-error-handling
-// #4. how to toggle a menu with knockout - https://stackoverflow.com/questions/39799600/how-to-use-knockoutjs-click-binding-to-create-a-hamburger-menu
-// #5. flickr api request - https://www.sitepoint.com/load-flickr-photos-using-jsonapi/
+// #3. how to toggle a menu with knockout - https://stackoverflow.com/questions/39799600/how-to-use-knockoutjs-click-binding-to-create-a-hamburger-menu
+// #4. flickr api request - https://idratherbewriting.com/learnapidoc/docapis_flickr_example.html
 // also made use of udacity google map api class code / adapted from
