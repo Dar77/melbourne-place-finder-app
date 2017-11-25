@@ -561,13 +561,6 @@ function getPlacesDetails(marker, infowindow) {
 	});
 }
 
-// Google map error handling
-function mapError() {
-
-	var mapError = document.getElementById('google-map-error');
-	mapError.innerHTML = '<div class="map-error"><h2>Sorry! Map Error</h2><p>There seems to be a problem loading the map, please try reloading the page</p></div>';
-}
-
 
 // View Model ==================================================================================================
 var viewModel = function(data) {
@@ -724,33 +717,32 @@ var viewModel = function(data) {
 			dataType: 'jsonp',
 			jsonp: 'callback',
 			timeout: 3000,
-			success: function(response) {
+		}).done(function(response) {
 
-				self.wikiArray.removeAll(); // clear the array
-				self.wikiError(false); // remove any error message
-				// load wikipedia data
-	            var wikiName = response[1];
-	            var wikiDescription = response[2];
-	            var wikiUrl = response[3];
-	            var p = wikiName.length;
-	            var descriptionStr;
-	            // run a loop to populate an array with objects containing a name, description and url
-	            for (var i = 0; i < p; i++) {
-	                if (wikiDescription !== '') {
-	                	descriptionStr =  wikiDescription[i];
-	                }
-	                self.wikiArray.push({name: wikiName[i], description: descriptionStr, url: wikiUrl[i]});
-	            }
-			},
-			error: function(e) {
+			self.wikiArray.removeAll(); // clear the array
+			self.wikiError(false); // remove any error message
+			// load wikipedia data
+            var wikiName = response[1];
+            var wikiDescription = response[2];
+            var wikiUrl = response[3];
+            var p = wikiName.length;
+            var descriptionStr;
+            // run a loop to populate an array with objects containing a name, description and url
+            for (var i = 0; i < p; i++) {
+                if (wikiDescription !== '') {
+                	descriptionStr =  wikiDescription[i];
+                }
+                self.wikiArray.push({name: wikiName[i], description: descriptionStr, url: wikiUrl[i]});
+            }
+		}).fail(function(e) {
 
-				console.log('wikipedia api request error');
-				self.wikiError(true); // display error message to user
-			}
-		});
+			console.log('wikipedia api request error');
+			self.wikiError(true); // display error message to user
+		})
 	};
 
 	// flickr request observables
+	self.flickrArray = ko.observableArray(); // array to store flickr results
 	self.flickrError = ko.observable(false); // flickr user error message
 
 	// AJAX - flickr request TODO - try the api key version
@@ -764,14 +756,16 @@ var viewModel = function(data) {
 		    data: { 'tags': request, 'format': 'json'},
 		    timeout: 5000,
 		    // response handled by jsonFlickrFeed(json) callback function
-			error: function(e, t, m) { // use timeout to trigger error
-
-		        if( t === "timeout" ) {
-			        console.log('flickr api error');
-			        self.flickrError(true); // display error message to user
-		        } // ref - #4. listed at bottom of file
-		    }
-	  	});
+		}).done(function(response) {
+			console.log(response);
+			//self.flickrArray.removeAll();
+			//self.flickrArray.push();
+		}).fail(function(t) {
+	        if( t === "timeout" ) {
+		        console.log('flickr api error');
+		        self.flickrError(true); // display error message to user
+	        } // ref - #4. listed at bottom of file
+	    })
 	};
 
 	// foursquare request observables
@@ -797,39 +791,40 @@ var viewModel = function(data) {
 				'&v=' + version +
 				'&m=foursquare',
 			timeout: 3000,
-			success: function(data) {
+		}).done(function(data) {
 
-				self.fourSqArray.removeAll(); // clear the array
-				self.fourSqError(false); // remove any error message
-				//load foursquare data
-				var fourSqCity, fourSqState, fourSqCategories;
-				var fourSqData = data.response.venues;
-				var v = fourSqData.length;
-	            for (var i = 0; i < v; i++) { // fill the foursquare array with data from the response
+			self.fourSqArray.removeAll(); // clear the array
+			self.fourSqError(false); // remove any error message
+			//load foursquare data
+			var fourSqCity, fourSqState, fourSqCategories;
+			var fourSqData = data.response.venues;
+			var v = fourSqData.length;
+            for (var i = 0; i < v; i++) { // fill the foursquare array with data from the response
 
-					var fourSqName = fourSqData[i].name;
-					var fourSqAddress = fourSqData[i].location.address;
-					if (fourSqData[i].location.city !== '') {
-						fourSqCity = fourSqData[i].location.city;
+				var fourSqName = fourSqData[i].name;
+				var fourSqAddress = fourSqData[i].location.address;
+				if (fourSqData[i].location.city !== '') {
+					fourSqCity = fourSqData[i].location.city;
+				}
+				if (fourSqData[i].location.state !== '') {
+					fourSqState = fourSqData[i].location.state;
+				}
+				for (var c = 0; c < fourSqData[i].categories.length; c++) {
+					if (fourSqData[i].categories.length > 0) {
+						fourSqCategories = fourSqData[i].categories[c].name;
 					}
-					if (fourSqData[i].location.state !== '') {
-						fourSqState = fourSqData[i].location.state;
-					}
-					for (var c = 0; c < fourSqData[i].categories.length; c++) {
-						if (fourSqData[i].categories.length > 0) {
-							fourSqCategories = fourSqData[i].categories[c].name;
-						}
-					}
-	                self.fourSqArray.push({name: fourSqName, category: fourSqCategories, address: fourSqAddress, city: fourSqCity, state: fourSqState});
-	            }
-			},
-			error: function(e) {
+				}
+                self.fourSqArray.push({name: fourSqName, category: fourSqCategories, address: fourSqAddress, city: fourSqCity, state: fourSqState});
+            }
+		}).fail(function(e) {
 
-				console.log('foursquare api request error');
-				self.fourSqError(true); // display error message to user
-			}
-		});
+			console.log('foursquare api request error');
+			self.fourSqError(true); // display error message to user
+		})
 	};
+
+	self.googleMapError = ko.observable(false); // hide googleMap error message, shows if map fails to load
+
 }; // end viewModel
 
 // process flickr api response - couldn't get this to work inside viewModel?
