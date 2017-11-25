@@ -78,7 +78,10 @@
 	    	<!-- map-info section -->
 	    	<div class="row map-info" id="map-info" data-bind="visible: infoScreenVisible">
 	    		<div class="col-xs-12 col-sm-12 col-md-6 col-lg-3">
-		        	<div id="google-map-error"></div> <!-- map error message -->
+		        	<div class="map-error" data-bind="visible: googleMapError">  <!-- map error message -->
+		        		<h2>Sorry! Map Error</h2>
+		        		<p>There seems to be a problem loading the map, please try reloading the page</p>
+		        	</div>
 					<div class="input-group info-search">
 						<input id="places-search" type="text" class="form-control" placeholder="general map search" aria-label="select a location">
 						<span class="input-group-btn">
@@ -156,8 +159,8 @@
 			s.parentNode.insertBefore(wf, s);
 			})(document);
 	    </script>
-	    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDFWuEoaxjSgXjvmdpCQE6dWiBWp8OV0fU&libraries=places,drawing,geometry&v=3&callback=initMap" onerror="mapError()"></script>
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDFWuEoaxjSgXjvmdpCQE6dWiBWp8OV0fU&libraries=places,drawing,geometry&v=3&callback=initMap"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
 		<script> // create a preload screen that fades when app loads
 			$(window).load(function() {
 			$(".loading").fadeOut();
@@ -165,7 +168,7 @@
 			});
 		</script>
 		<script src="src/js/knockout.js"></script>
-		<!-- <script src="src/js/app.js"></script> src files before processing with grunt-->
-		<script src="dist/js/main-min.js"></script>
+		<script src="src/js/app.js"></script> <!--src files before processing with grunt-->
+		<!--<script src="dist/js/main-min.js"></script> -->
     </body>
 </html>
