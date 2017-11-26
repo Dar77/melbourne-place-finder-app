@@ -83,9 +83,9 @@
 		        		<p>There seems to be a problem loading the map, please try reloading the page</p>
 		        	</div>
 					<div class="input-group info-search">
-						<input id="places-search" type="text" class="form-control" placeholder="general map search" aria-label="select a location">
+						<input id="places-search" type="text" class="form-control" placeholder="general map search" aria-label="select a location" data-bind="textInput: placeValue"> <!-- ++++++++++++++++++++++++++++++++++++-->
 						<span class="input-group-btn">
-						<button id="go-places" class="btn btn-secondary" type="button">Go!</button>
+						<button id="go-places" class="btn btn-secondary" type="button" data-bind="click: placeGo">Go!</button>
 						</span>
 					</div>
 				</div>

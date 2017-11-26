@@ -262,7 +262,7 @@ var modelData = {
 // Initialize Google Map ========================================================================================
 var map;
 var markers = []; // array for map markers
-var placeMarkers = []; // array for google places markers
+//var placeMarkers = []; // array for google places markers
 
 function initMap() {
 
@@ -285,9 +285,9 @@ function initMap() {
     var highlightedIcon = createIcon('be23e4');
 
     // google places search input
-    var searchBox = new google.maps.places.SearchBox(
-    document.getElementById('places-search'));
-    searchBox.bindTo('bounds', map); // bias results to the bounds of the map
+    //var searchBox = new google.maps.places.SearchBox(
+    //document.getElementById('places-search'));
+    //searchBox.bindTo('bounds', map); // bias results to the bounds of the map ++++++++++++++++++++++++++++++++++++++++++++++++++++
 
     // The following group uses the location array to create an array of markers on initialize.
     for (var i = 0; i < modelData.places.length; i++) {
@@ -330,7 +330,7 @@ function initMap() {
 
 		this.setIcon(defaultIcon);
     }
-
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	// Listen for the event fired when the user selects a prediction from the picklist
 	searchBox.addListener('places_changed', function() {
 
@@ -339,16 +339,16 @@ function initMap() {
 
 	// Listen for the event fired when the user selects a prediction and clicks the "go" button
 	document.getElementById('go-places').addEventListener('click', textSearchPlaces);
-
-	//Get current center
+*/ //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	/*Get current center
 	var mapCenter = map.getCenter();
 
 	// event listener for resize on window
 	google.maps.event.addDomListener(window, 'resize', function() {
 
-		map.setCenter(mapCenter); // set map to center if window is resized
+		//map.setCenter(mapCenter); // set map to center if window is resized
 	}); // ref - #1. listed at bottom of file
-
+*/
     showListings(); // Initial layout for map and markers
 
 } // end initMap()
@@ -434,9 +434,14 @@ function showListings() {
 		bounds.extend(markers[i].position);
 	}
 	map.fitBounds(bounds);
+	// event listener for resize on window
+	google.maps.event.addDomListener(window, 'resize', function() {
+
+		map.fitBounds(bounds); // fit content to the bounds of the markers
+	}); // ref - #1. listed at bottom of file
 }
 
-// hide all the markers
+/* hide all the markers
 function hideMarkers(markers) {
 
 	for (var i = 0; i < markers.length; i++) {
@@ -444,7 +449,7 @@ function hideMarkers(markers) {
 	}
 }
 
-// This function fires when the user selects a searchbox picklist item.
+This function fires when the user selects a searchbox picklist item.
 function searchBoxPlaces(searchBox) {
 
 	hideMarkers(placeMarkers);
@@ -560,13 +565,14 @@ function getPlacesDetails(marker, infowindow) {
 		}
 	});
 }
+*/
 
-// map error handler
+// google map error handler
 function mapError() {
 
 	console.log('google map error');
 	window.alert('Sorry! There was a problem loading the map, please try refreshing the page.');
-}
+} // end google map api functions
 
 
 // View Model ==================================================================================================
@@ -608,15 +614,12 @@ var viewModel = function(data) {
 
 		var s = self.selectedLocations().length;
 		for (var i = 0; i < s; i++) {
-			//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-			self.selectedLocations()[i].addListener('click', selectedLocationsClick);
-			//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+			self.selectedLocations()[i].addListener('click', selectedLocationsClick); // listener for clicks on marker
 			self.selectedLocations()[i].setVisible(true); // show the selected markers
 			self.selectedLocations()[i].setMap(map);
 		}
 	}
 
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	// when a marker is clicked show the info screen
 	function selectedLocationsClick() {
 
@@ -635,7 +638,7 @@ var viewModel = function(data) {
 		// request the foursquare data
 		self.fourSquareData(lat, lng); // use the currentPlace() lat,lng values as the argument
 	};
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 	// center map on the visible markers
 	self.centerMarker = function() {
 
@@ -661,7 +664,150 @@ var viewModel = function(data) {
 		return iconType;
 	};
 
-	// UI controls ======================================================
+	// Places search functionality ===============================================================
+	var placeMarkers = []; // array for place markers
+	self.placeValue = ko.observable(); // users entered place search
+
+	var searchBox = new google.maps.places.SearchBox(document.getElementById('places-search'));
+    searchBox.bindTo('bounds', map);
+
+	searchBox.addListener('places_changed', function() { // run when user selects a place from the pick-list
+
+	searchBoxPlaces(this);
+	});
+
+	self.placeGo = function() { // run when user clicks on places go button
+
+		textSearchPlaces(self.placeValue());
+	};
+
+	// hide all the markers
+	function hideMarkers(markers) {
+
+		for (var i = 0; i < markers.length; i++) {
+			markers[i].setMap(null);
+		}
+	}
+
+	function searchBoxPlaces(searchBox) {
+
+		hideMarkers(placeMarkers);
+		var places = searchBox.getPlaces();
+		// For each place, get the icon, name and location.
+		if (places.length === 0) {
+			window.alert('We did not find any places matching that search!');
+		} else {
+		// For each place, get the icon, name and location.
+		createMarkersForPlaces(places);
+		}
+	}
+
+	// This function fires when the user select "go" on the places search.
+	function textSearchPlaces() {
+
+		var bounds = map.getBounds();
+		hideMarkers(placeMarkers);
+		var placesService = new google.maps.places.PlacesService(map);
+			placesService.textSearch({
+			query: self.placeValue(),
+			bounds: bounds
+		}, function(results, status) {
+			if (status === google.maps.places.PlacesServiceStatus.OK) {
+			createMarkersForPlaces(results);
+			}
+		});
+	}
+
+	// This function creates markers for each place found in either places search.
+	function createMarkersForPlaces(places) {
+
+		var bounds = new google.maps.LatLngBounds();
+		for (var i = 0; i < places.length; i++) {
+			var place = places[i];
+			var icon = {
+			url: place.icon,
+			size: new google.maps.Size(35, 35),
+			origin: new google.maps.Point(0, 0),
+			anchor: new google.maps.Point(15, 34),
+			scaledSize: new google.maps.Size(25, 25)
+			};
+			// Create a marker for each place.
+			var marker = new google.maps.Marker({
+				map: map,
+				icon: icon,
+				title: place.name,
+				position: place.geometry.location,
+				id: place.place_id
+			});
+			// Create a single infowindow to be used with the place details information
+			var placeInfoWindow = new google.maps.InfoWindow();
+			marker.addListener('click', clickedPlaceMarker);
+			placeMarkers.push(marker);
+			if (place.geometry.viewport) {
+				// Only geocodes have viewport.
+				bounds.union(place.geometry.viewport);
+			} else {
+				bounds.extend(place.geometry.location);
+			}
+		}
+		// If a marker is clicked, do a place details search on it in the next function.
+		function clickedPlaceMarker() {
+
+			if (placeInfoWindow.marker == this) {
+				console.log("This infowindow already is on this marker!");
+			} else {
+				getPlacesDetails(this, placeInfoWindow);
+				map.panTo(this.getPosition()); // pan to place marker location
+			}
+		}
+		map.fitBounds(bounds);
+	}
+
+	// place details search
+	function getPlacesDetails(marker, infowindow) {
+
+		var service = new google.maps.places.PlacesService(map);
+		service.getDetails({ placeId: marker.id }, function(place, status) {
+			if (status === google.maps.places.PlacesServiceStatus.OK) {
+				// Set the marker property on this infowindow so it isn't created again.
+				infowindow.marker = marker;
+				var innerHTML = '<div class="places-info-box">';
+				if (place.name) {
+					innerHTML += '<h3>' + place.name + '</h3>';
+				}
+				if (place.formatted_address) {
+					innerHTML += '<br>' + place.formatted_address;
+				}
+				if (place.formatted_phone_number) {
+					innerHTML += '<br>' + place.formatted_phone_number;
+				}
+				if (place.opening_hours) {
+					innerHTML += '<br><br><strong>Hours:</strong><br>' +
+					place.opening_hours.weekday_text[0] + '<br>' +
+					place.opening_hours.weekday_text[1] + '<br>' +
+					place.opening_hours.weekday_text[2] + '<br>' +
+					place.opening_hours.weekday_text[3] + '<br>' +
+					place.opening_hours.weekday_text[4] + '<br>' +
+					place.opening_hours.weekday_text[5] + '<br>' +
+					place.opening_hours.weekday_text[6];
+				}
+				if (place.photos) {
+					innerHTML += '<br><br><img src="' + place.photos[0].getUrl(
+					{maxHeight: 100, maxWidth: 200}) + '">';
+				}
+				innerHTML += '</div>';
+				infowindow.setContent(innerHTML);
+				infowindow.open(map, marker);
+				// Make sure the marker property is cleared if the infowindow is closed.
+				infowindow.addListener('closeclick', function() {
+				infowindow.marker = null;
+				});
+			}
+		});
+	}
+	// end places search
+
+	// UI controls ========================================================================
 	// toggle slide menu
 	self.menuClose = ko.observable(false); // starting menu state (open)
 
