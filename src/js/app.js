@@ -45,7 +45,7 @@ var modelData = {
 		},
 		{
 			placeName: 'Royal Arcade, Melbourne',
-			location: {lat: -37.814624, lng: 144.963843}
+			location: {lat: -37.814716, lng: 144.963472}
 		},
 		{
 			placeName: 'Melbourne Aquarium',
