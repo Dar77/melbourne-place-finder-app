@@ -83,7 +83,7 @@
 		        		<p>There seems to be a problem loading the map, please try reloading the page</p>
 		        	</div>
 					<div class="input-group info-search">
-						<input id="places-search" type="text" class="form-control" placeholder="general map search" aria-label="select a location" data-bind="textInput: placeValue"> <!-- ++++++++++++++++++++++++++++++++++++-->
+						<input id="places-search" type="text" class="form-control" placeholder="general map search" aria-label="select a location" data-bind="textInput: placeValue">
 						<span class="input-group-btn">
 						<button id="go-places" class="btn btn-secondary" type="button" data-bind="click: placeGo">Go!</button>
 						</span>
@@ -170,9 +170,9 @@
 			$(".preloader").delay(500).fadeOut("slow");
 			});
 		</script>
-		<script src="src/js/knockout.js"></script>
-		<script src="src/js/app.js"></script> <!--src files before processing with grunt-->
-		<!--<script src="dist/js/main-min.js"></script> -->
+		<!--<script src="src/js/knockout.js"></script>
+		<script src="src/js/app.js"></script> src files before processing with grunt-->
+		<script src="dist/js/main-min.js"></script>
 		<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDFWuEoaxjSgXjvmdpCQE6dWiBWp8OV0fU&libraries=places,drawing,geometry&v=3&callback=initMap" onerror="mapError()"></script>
     </body>
 </html>
