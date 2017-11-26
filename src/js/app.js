@@ -561,6 +561,13 @@ function getPlacesDetails(marker, infowindow) {
 	});
 }
 
+// map error handler
+function mapError() {
+
+	console.log('google map error');
+	window.alert('Sorry! There was a problem loading the map, please try refreshing the page.');
+}
+
 
 // View Model ==================================================================================================
 var viewModel = function(data) {
@@ -570,6 +577,7 @@ var viewModel = function(data) {
     self.viewMarkers = ko.observableArray(markers); // array containing markers as created by Google initMap()
     self.selected = ko.observable(''); // the users text input search selection
     self.selectedLocations = ko.observableArray(); // markers contained in search results
+	self.currentPlace = ko.observable(); // a place that has been selected by user
 
 	// filter the text input
     self.setLocations = ko.computed(function() { // ref - #2. listed at bottom of file
@@ -600,11 +608,34 @@ var viewModel = function(data) {
 
 		var s = self.selectedLocations().length;
 		for (var i = 0; i < s; i++) {
+			//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+			self.selectedLocations()[i].addListener('click', selectedLocationsClick);
+			//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 			self.selectedLocations()[i].setVisible(true); // show the selected markers
 			self.selectedLocations()[i].setMap(map);
 		}
 	}
 
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	// when a marker is clicked show the info screen
+	function selectedLocationsClick() {
+
+		self.currentPlace(this);
+		map.panTo(self.currentPlace().getPosition()); // pan to marker location
+		self.openInfoScreen(); // open the map info screen
+
+		// request the wikipedia data
+		self.wikiData(self.currentPlace());
+
+		// request the flickr data
+		self.flickrData(self.currentPlace().title);
+
+		var lat = self.currentPlace().position.lat();
+		var lng = self.currentPlace().position.lng();
+		// request the foursquare data
+		self.fourSquareData(lat, lng); // use the currentPlace() lat,lng values as the argument
+	};
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	// center map on the visible markers
 	self.centerMarker = function() {
 
@@ -672,7 +703,6 @@ var viewModel = function(data) {
     };
     // end UI controls
 
-	self.currentPlace = ko.observable();
 	// selected list item - when the user selects a place from the list
 	self.selectedListItem = function(marker) {
 
