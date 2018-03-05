@@ -9,8 +9,9 @@ Project to create a single page application. The project should feature a map an
 This is a project from Udacity's **Frontend Nanodegree** [program](https://www.udacity.com/course/front-end-web-developer-nanodegree--nd001).
 ___
 
+Visit: [Melbourne Place Finder App](http://www.it48.xyz/melbourne-place-finder)
+
 ![Melbourne Place Finder App](src/images/readme-images/melbourne-place-finder.jpg)
-Visit: [App](http://www.it48.xyz/melbourne-place-finder)
 ___
 
 
