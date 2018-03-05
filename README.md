@@ -10,7 +10,7 @@ This is a project from Udacity's **Frontend Nanodegree** [program](https://www.u
 ___
 
 ![Melbourne Place Finder App](src/images/readme-images/melbourne-place-finder.jpg)
-
+Visit: [App](http://www.it48.xyz/melbourne-place-finder)
 ___
 
 
